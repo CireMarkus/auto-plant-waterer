@@ -3,9 +3,10 @@ import busio
 import digitalio
 import os
 import board
+import csv
 import adafruit_mcp3xxx.mcp3008 as MCP
 from adafruit_mcp3xxx.analog_in import AnalogIn
-import pygame
+import keyboard
 import time
 import json
 
@@ -73,8 +74,7 @@ class MoistureSensor:
                 self.__highestValue = self.__channel.value
             print("Time running: {:.2f}, Highest value: {:.4f}".format((time.time() - startTime),self.__highestVoltage))
             self.clear()
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_SPACE]: 
+            if keyboard.is_pressed('space'): 
                 print('Ending calibration for soil dryness.\n\n')
                 break
         print("Next we will test test the wetness of the soil")
@@ -89,8 +89,7 @@ class MoistureSensor:
                 self.__lowestValue = self.__channel.value
             print("Time running: {:.2f}, Lowest value: {:.4f}".format((time.time() - startTime),self.__lowestValue))
             self.clear()
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_SPACE]:
+            if keyboard.is_pressed('space'):
                 print('Ending calibration for soil wetness.\n\n')
                 break
         print("Calibration is complete.\n\n")
