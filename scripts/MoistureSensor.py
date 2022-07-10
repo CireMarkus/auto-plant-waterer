@@ -72,7 +72,7 @@ class MoistureSensor:
                 self.__highestVoltage = self.__channel.voltage 
             if(self.__highestValue < self.__channel.value):
                 self.__highestValue = self.__channel.value
-            print("Time running: {:.2f}, Highest value: {:.4f}".format((time.time() - startTime),self.__highestVoltage))
+            print("Time running: {:.2f}, Highest value: {:.4f}".format((time.time() - startTime),self.__highestValue))
             self.clear()
             if ((time.time() - startTime) > 10.0): 
                 print('Ending calibration for soil dryness.\n\n')
