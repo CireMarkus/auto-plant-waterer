@@ -74,7 +74,7 @@ class MoistureSensor:
                 self.__highestValue = self.__channel.value
             print("Time running: {:.2f}, Highest value: {:.4f}".format((time.time() - startTime),self.__highestVoltage))
             self.clear()
-            if keyboard.is_pressed('space'): 
+            if ((time.time() - startTime) > 10.0): 
                 print('Ending calibration for soil dryness.\n\n')
                 break
         print("Next we will test test the wetness of the soil")
@@ -89,7 +89,7 @@ class MoistureSensor:
                 self.__lowestValue = self.__channel.value
             print("Time running: {:.2f}, Lowest value: {:.4f}".format((time.time() - startTime),self.__lowestValue))
             self.clear()
-            if keyboard.is_pressed('space'):
+            if ((time.time() -startTime) > 10.0):
                 print('Ending calibration for soil wetness.\n\n')
                 break
         print("Calibration is complete.\n\n")
