@@ -41,6 +41,7 @@ class MoistureSensor:
         """
         try: 
             self.__file = open("Data/bounds.txt",'r')
+            print("File was located successfully. Now the bounds will be loaded.\n\n")
             self.setBounds()
         except FileNotFoundError:
             os.mkdir("Data")
@@ -80,7 +81,7 @@ class MoistureSensor:
         print("Next we will test test the wetness of the soil")
         values.append(self.__highestVoltage)
         values.append(self.__highestValue)
-
+        input("Press Enter to continue.")
         startTime = time.time()
         while True: 
             if(self.__lowestVoltage > self.__channel.voltage):
@@ -95,7 +96,7 @@ class MoistureSensor:
         print("Calibration is complete.\n\n")
         values.append(self.__lowestVoltage)
         values.append(self.__lowestValue)
-        
+        input("Press enter to continue.")
         json.dump(values,self.__file)
 
 
@@ -108,7 +109,8 @@ class MoistureSensor:
         self.__lowestVoltage = values[2]
         self.__lowestValue = values[3]
         self.__file.close()
-        self.__file = None
+        
+        print("Highest voltage:{} \nHighest ADC Value:{} \nLowest voltage:{} \nLowest ADC Value:{}".format(self.__highestVoltage,self.__highestValue,self.__lowestVoltage,self.__lowestValue))
 
     #returns the ADC value and the voltage from the moisture sensor. 
     def moistureLevel(self):
