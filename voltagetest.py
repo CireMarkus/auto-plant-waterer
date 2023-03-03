@@ -1,6 +1,5 @@
 import time
 import busio
-import keyboard
 import digitalio
 import board
 import adafruit_mcp3xxx.mcp3008 as MCP
