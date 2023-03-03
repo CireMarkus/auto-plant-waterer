@@ -23,6 +23,7 @@ class MoistureSensor:
     __lowestVoltage = 0.0 # the lower the voltage the more water is in the pot.
     __lowestValue = 0 # lower adc value means more water in the pot. 
     __calibrateTime = 10.0 #variable to hold the time that the calibrations will run.
+    __fileName = "Data/moistureBounds.txt"
 
     def __init__(self):
         
@@ -41,7 +42,7 @@ class MoistureSensor:
             the user will be sent through the calibration process for the sensor. 
         """
         try: 
-            self.__file = open("Data/bounds.txt",'r')
+            self.__file = open(self.__fileName,'r')
             print("File was located successfully. Now the bounds will be loaded.\n\n")
             self.__setBounds() 
         except FileNotFoundError:
@@ -57,7 +58,7 @@ class MoistureSensor:
             _ = system('clear')
 
     def calibrate(self): 
-        self.__file = open("Data/bounds.txt","w")
+        self.__file = open(self.__fileName,"w")
         values = []
         print("First we will be testing for the dryness of the soil.\n")
         print("Place the sensor in the dry soil and press enter to continue: \n")
@@ -132,10 +133,3 @@ class MoistureSensor:
         print("Moisture sensor deleted.")
         pass
 
-
-def main():
-    sensorTest = MoistureSensor()
-    pass
-
-if __name__ == '__main__':
-    main()
