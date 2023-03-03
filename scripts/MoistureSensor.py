@@ -22,6 +22,7 @@ class MoistureSensor:
     __highestVoltage = 0.0 # higher voltage means less water in the pot. 
     __lowestVoltage = 0.0 # the lower the voltage the more water is in the pot.
     __lowestValue = 0 # lower adc value means more water in the pot. 
+    __calibrateTime = 10.0 #variable to hold the time that the calibrations will run.
 
     def __init__(self):
         
@@ -42,12 +43,13 @@ class MoistureSensor:
         try: 
             self.__file = open("Data/bounds.txt",'r')
             print("File was located successfully. Now the bounds will be loaded.\n\n")
-            self.setBounds()
+            self.__setBounds() 
         except FileNotFoundError:
             os.mkdir("Data")
             print("File not found so max and min values will need to be set.\n")
             print("Calibraiton will run. Please have dry soil and water to set the moisture bounds.\n")
             self.calibrate()
+            self.__setBounds()
     
     def clear(self): 
         if name == 'nt':
@@ -75,7 +77,7 @@ class MoistureSensor:
                 self.__highestValue = self.__channel.value
             print("Time running: {:.2f}, Highest value: {:.4f}".format((time.time() - startTime),self.__highestValue))
             self.clear()
-            if ((time.time() - startTime) > 10.0): 
+            if ((time.time() - startTime) > self.__calibrateTime): 
                 print('Ending calibration for soil dryness.\n\n')
                 break
         print("Next we will test test the wetness of the soil")
@@ -90,7 +92,7 @@ class MoistureSensor:
                 self.__lowestValue = self.__channel.value
             print("Time running: {:.2f}, Lowest value: {:.4f}".format((time.time() - startTime),self.__lowestValue))
             self.clear()
-            if ((time.time() -startTime) > 10.0):
+            if ((time.time() -startTime) > self.__calibrateTime):
                 print('Ending calibration for soil wetness.\n\n')
                 break
         print("Calibration is complete.\n\n")
@@ -101,7 +103,7 @@ class MoistureSensor:
 
 
     #pulls from the .csv file and sets the voltage bounds for the moisture level. 
-    def setBounds(self):
+    def __setBounds(self):
         values = json.load(self.__file)
         
         self.__highestVoltage = values[0]
@@ -115,6 +117,13 @@ class MoistureSensor:
     #returns the ADC value and the voltage from the moisture sensor. 
     def moistureLevel(self):
         return (self.__channel.voltage,self.__channel.value)
+    
+    #returns the upper and lower bound for the moisture levels
+    def getUpperBound(self):
+        return(self.__highestVoltage,self.__highestValue)
+    
+    def getLowerBound(self):
+        return(self.__lowestVoltage,self.__lowestValue)
 
 
 
