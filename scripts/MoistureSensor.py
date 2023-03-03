@@ -49,7 +49,6 @@ class MoistureSensor:
             print("File not found so max and min values will need to be set.\n")
             print("Calibraiton will run. Please have dry soil and water to set the moisture bounds.\n")
             self.calibrate()
-            self.__setBounds()
     
     def clear(self): 
         if name == 'nt':
@@ -103,6 +102,7 @@ class MoistureSensor:
         input("Press enter to continue.")
         
         json.dump(values,self.__file)
+        self.__file.close()
 
 
     #pulls from the .csv file and sets the voltage bounds for the moisture level. 
@@ -128,7 +128,9 @@ class MoistureSensor:
     def getLowerBound(self):
         return(self.__lowestVoltage,self.__lowestValue)
 
-
+    def __del__(self):
+        print("Moisture sensor deleted.")
+        pass
 
 
 def main():
