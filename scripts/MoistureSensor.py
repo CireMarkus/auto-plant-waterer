@@ -75,7 +75,7 @@ class MoistureSensor:
                 self.__highestVoltage = self.__channel.voltage 
             if(self.__highestValue < self.__channel.value):
                 self.__highestValue = self.__channel.value
-            print("Time running: {:.2f}, Highest value: {:.4f}".format((time.time() - startTime),self.__highestValue))
+            print("Time running: {:.2f}, Highest value: {:.4f}".format((time.time() - startTime),self.__highestValue),end='\r')
             self.clear()
             if ((time.time() - startTime) > self.__calibrateTime): 
                 print('Ending calibration for soil dryness.\n\n')
@@ -90,8 +90,7 @@ class MoistureSensor:
                 self.__lowestVoltage = self.__channel.voltage
             if(self.__lowestValue > self.__channel.value):
                 self.__lowestValue = self.__channel.value
-            print("Time running: {:.2f}, Lowest value: {:.4f}".format((time.time() - startTime),self.__lowestValue))
-            self.clear()
+            print("Time running: {:.2f}, Lowest value: {:.4f}".format((time.time() - startTime),self.__lowestValue),end='\r')
             if ((time.time() -startTime) > self.__calibrateTime):
                 print('Ending calibration for soil wetness.\n\n')
                 break
@@ -99,6 +98,7 @@ class MoistureSensor:
         values.append(self.__lowestVoltage)
         values.append(self.__lowestValue)
         input("Press enter to continue.")
+        self.clear()
         json.dump(values,self.__file)
 
 
