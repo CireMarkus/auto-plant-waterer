@@ -62,6 +62,7 @@ class MoistureSensor:
         values = []
         print("First we will be testing for the dryness of the soil.\n")
         print("Place the sensor in the dry soil and press enter to continue: \n")
+        input("Press Enter to continue.")
         self.__highestVoltage = self.__channel.voltage
         self.__highestValue = self.__channel.value
         self.__lowestVoltage = self.__channel.voltage
@@ -76,11 +77,12 @@ class MoistureSensor:
             if(self.__highestValue < self.__channel.value):
                 self.__highestValue = self.__channel.value
             print("Time running: {:.2f}, Highest value: {:.4f}".format((time.time() - startTime),self.__highestValue),end='\r')
-            self.clear()
             if ((time.time() - startTime) > self.__calibrateTime): 
                 print('Ending calibration for soil dryness.\n\n')
                 break
+        self.clear()
         print("Next we will test test the wetness of the soil")
+        
         values.append(self.__highestVoltage)
         values.append(self.__highestValue)
         input("Press Enter to continue.")
