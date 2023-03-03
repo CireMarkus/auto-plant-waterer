@@ -97,10 +97,11 @@ class MoistureSensor:
                 print('Ending calibration for soil wetness.\n\n')
                 break
         print("Calibration is complete.\n\n")
+        self.clear()
         values.append(self.__lowestVoltage)
         values.append(self.__lowestValue)
         input("Press enter to continue.")
-        self.clear()
+        
         json.dump(values,self.__file)
 
 
