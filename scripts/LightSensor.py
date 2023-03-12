@@ -28,4 +28,4 @@ if __name__ == "__main__":
     light = LightSensor()
     while(True):
         vals = light.getCurrentLight()
-        print("Current Lux value: {:0.3f} Current light value: {:6d}".format(vals[0],vals[1]), end='\r')
+        print("Current Lux value: {:6d} Current light value: {:6d}".format(vals[0],vals[1]), end='\r')
