@@ -27,5 +27,5 @@ class LightSensor:
 if __name__ == "__main__":
     light = LightSensor()
     while(True):
-        vals = LightSensor.getCurrentLight()
+        vals = light.getCurrentLight()
         print("Current Lux value: {} Current light value: {}".format(vals[0],vals[1]), end='\r')
