@@ -2,9 +2,10 @@ import time
 import board
 import adafruit_dht
 
-dht = adafruit_dht.DHT11(board.20)
+dht = adafruit_dht.DHT22(board.D26)
 
 while True:
-    temp, hum = dht.measure()
+    temp = dht.temperature * (9/5) +32
+    hum = dht.humidity
     
     print("temperature: {}, humidity: {}".format(temp,hum))
