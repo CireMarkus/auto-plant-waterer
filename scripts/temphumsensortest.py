@@ -8,4 +8,6 @@ while True:
     temp = dht.temperature * (9/5) +32
     hum = dht.humidity
     
-    print("temperature: {}, humidity: {}".format(temp,hum))
+    print("Temperature(F): {}, Humidity: {}".format(temp,hum))
+    time.sleep(2)
+    
