@@ -32,7 +32,7 @@ class LightSensor:
                 return
             elif(self.__gainIndex < len(self.__GAINARRAY)-1):
                 self.__gainIndex += 1
-                self.__gainIndex = 0
+                self.__itIndex = 0
                 self.__sensor.light_integration_time = self.__ITARRAY[self.__itIndex]
                 self.__sensor.light_gain = self.__GAINARRAY[self.__gainIndex]
                 self.__sensor.light_shutdown = False
