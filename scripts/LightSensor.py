@@ -65,4 +65,4 @@ if __name__ == "__main__":
     light = LightSensor()
     while(True):
         vals = light.getCurrentLight()
-        print("Current Lux value: {:6.0f} Current light value: {:6d} Gain: {} Integration time: {}".format(vals[0],vals[1],light.getGain(),light.getIntegrationTime()), end='\r')
+        print("Current Lux value: {:6.0f} Current light value: {:6d} Gain: {:6.0f} Integration time: {:3d}".format(vals[0],vals[1],light.getGain(),light.getIntegrationTime()), end='\r')
