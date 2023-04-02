@@ -57,9 +57,12 @@ class LightSensor:
     def getCurrentLight(self):
         self.__autoAdjust()
         return (self.__sensor.lux,self.__sensor.light)
-
+    def getIntegrationTime(self):
+        return self.__sensor.light_integration_time
+    def getGain(self):
+        return self.__sensor.light_gain
 if __name__ == "__main__":
     light = LightSensor()
     while(True):
         vals = light.getCurrentLight()
-        print("Current Lux value: {:6.0f} Current light value: {:6d}".format(vals[0],vals[1]), end='\r')
+        print("Current Lux value: {:6.0f} Current light value: {:6d} Gain: {} Integration time: {}".format(vals[0],vals[1],light.getGain(),light.getIntegrationTime()), end='\r')
