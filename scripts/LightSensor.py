@@ -20,10 +20,6 @@ class LightSensor:
         self.__itIndex = 0
         self.__sensor.light_integration_time = self.__ITARRAY[self.__itIndex]
         self.__sensor.light_gain = self.__GAINARRAY[self.__gainIndex]
-    #returns the current light intensity with lux first and voltage second
-    def getCurrentLight(self):
-        self.__autoAdjust()
-        return (self.__sensor.lux,self.__sensor.light)
     
     #TODO write function that will automatically adjust the sensitivity of the sensor as the amibient light changes.
     def autoAdjust(self):
@@ -32,6 +28,10 @@ class LightSensor:
             
         pass
     
+    #returns the current light intensity with lux first and voltage second
+    def getCurrentLight(self):
+        #self.__autoAdjust()
+        return (self.__sensor.lux,self.__sensor.light)
 
 if __name__ == "__main__":
     light = LightSensor()
