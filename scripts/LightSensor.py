@@ -24,11 +24,11 @@ class LightSensor:
     #TODO write function that will automatically adjust the sensitivity of the sensor as the amibient light changes.
     def __autoAdjust(self):
         if(self.__sensor.light < 10):
-            self.__sensor.light_shutdown = True
+            #self.__sensor.light_shutdown = True
             if(self.__itIndex < len(self.__ITARRAY)-1):
                 self.__itIndex += 1
                 self.__sensor.light_integration_time = self.__ITARRAY[self.__itIndex]
-                self.__sensor.light_shutdown = False
+                #self.__sensor.light_shutdown = False
                 return
             elif(self.__gainIndex < len(self.__GAINARRAY)-1):
                 self.__gainIndex += 1
@@ -38,7 +38,7 @@ class LightSensor:
                 self.__sensor.light_shutdown = False
                 return
         elif (self.__sensor.light > 1000):
-            self.__sensor.light_shutdown = True
+            #self.__sensor.light_shutdown = True
             if(self.__itIndex > 0):
                 self.__itIndex -= 1
                 self.__sensor.light_integration_time = self.__ITARRAY[self.__itIndex]
@@ -49,7 +49,7 @@ class LightSensor:
                 self.__itIndex = len(self.__ITARRAY)-1
                 self.__sensor.light_integration_time = self.__ITARRAY[self.__itIndex]
                 self.__sensor.light_gain = self.__GAINARRAY[self.__gainIndex]
-                self.__sensor.light_shutdown = False
+                #self.__sensor.light_shutdown = False
                 return
         return
     
