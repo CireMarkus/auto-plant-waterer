@@ -15,7 +15,7 @@ class LightSensor:
         except Exception as e: 
             print("The following error has occured during initialization: {}".format(e))
         self.__ITARRAY =[self.__sensor.ALS_25MS,self.__sensor.ALS_50MS,self.__sensor.ALS_100MS,self.__sensor.ALS_200MS,self.__sensor.ALS_400MS,self.__sensor.ALS_800MS]
-        self.__GAINARRAY = [self.__sensor.ALS_GAIN_1_8,self.__sensor.ALS_GAIN_1_4,self.__sensor.ALS_GAIN_1_2,self.__sensor.ALS_GAIN_1,self.__sensor.ALS_GAIN_2]
+        self.__GAINARRAY = [self.__sensor.ALS_GAIN_1_8,self.__sensor.ALS_GAIN_1_4,self.__sensor.ALS_GAIN_1,self.__sensor.ALS_GAIN_2]
         self.__gainIndex = 0
         self.__itIndex = 0
         self.__sensor.light_integration_time = self.__ITARRAY[self.__itIndex]
