@@ -58,9 +58,9 @@ class LightSensor:
         self.__autoAdjust()
         return (self.__sensor.lux,self.__sensor.light)
     def getIntegrationTime(self):
-        return self.__sensor.light_integration_time
+        return self.__sensor.integration_time_value()
     def getGain(self):
-        return self.__sensor.light_gain
+        return self.__sensor.gain_value()
 if __name__ == "__main__":
     light = LightSensor()
     while(True):
