@@ -19,8 +19,9 @@ while runs < 100000:
         successfulRuns += 1
     except Exception as error:
         errors.append(error)
- 
-    
+    runs+=1
+
+print("\n\n\n\n\n\n\n\n\n") 
 for i in errors:
     print(i)
     
