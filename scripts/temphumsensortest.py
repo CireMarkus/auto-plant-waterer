@@ -8,15 +8,15 @@ runs = 0;
 successfulRuns = 0;
 failedRuns = 0;
 
-while runs < 100000:
+while runs < 10000:
     
     try:
         temp = dht.temperature * (9/5) +32
         hum = dht.humidity
-        #print("Temperature(F): {}, Humidity: {}".format(temp,hum))
+        print("Temperature(F): {}, Humidity: {}".format(temp,hum))
         successfulRuns += 1
     except Exception as error:
-        #print(error)
+        print(error)
         failedRuns += 1
         pass
     runs += 1
