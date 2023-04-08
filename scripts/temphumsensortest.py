@@ -10,8 +10,8 @@ failedRuns = 0;
 errors = []
 
 
-while runs < 100000:
-    
+while runs < 10000:
+    time.sleep(3)
     try:
         temp = dht.temperature * (9/5) +32
         hum = dht.humidity
