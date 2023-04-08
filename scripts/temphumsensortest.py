@@ -14,8 +14,10 @@ while runs < 100000:
         temp = dht.temperature * (9/5) +32
         hum = dht.humidity
         #print("Temperature(F): {}, Humidity: {}".format(temp,hum))
+        successfulRuns += 1
     except Exception as error:
         #print(error)
+        failedRuns += 1
         pass
     runs += 1
     print(runs,end='\r')
