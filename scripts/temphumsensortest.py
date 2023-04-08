@@ -8,7 +8,7 @@ runs = 0;
 successfulRuns = 0;
 failedRuns = 0;
 
-while runs < 1000000:
+while runs < 100000:
     
     try:
         temp = dht.temperature * (9/5) +32
