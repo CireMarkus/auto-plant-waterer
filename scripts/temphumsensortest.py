@@ -16,6 +16,7 @@ while runs < 1000000:
         print("Temperature(F): {}, Humidity: {}".format(temp,hum))
     except Exception as error:
         print(error)
+    runs += 1
     
 print ("Runs: {}, Successful Runs: {} {}%, Failed Runs: {} {}%".format(runs,successfulRuns,((successfulRuns/runs)*100),failedRuns,((failedRuns/runs)*100)))
     
