@@ -4,15 +4,19 @@ import adafruit_dht
 
 dht = adafruit_dht.DHT22(board.D26)
 
-while True:
+runs = 0; 
+successfulRuns = 0;
+failedRuns = 0;
+
+while runs < 1000000:
+    
     try:
         temp = dht.temperature * (9/5) +32
         hum = dht.humidity
         print("Temperature(F): {}, Humidity: {}".format(temp,hum))
-        time.sleep(2)
-    except RuntimeError as error:
-        print(error.args[0])
+    except Exception as error:
+        print(error)
     
-    
+print ("Runs: {}, Successful Runs: {} {}%, Failed Runs: {} {}%".format(runs,successfulRuns,((successfulRuns/runs)*100),failedRuns,((failedRuns/runs)*100)))
     
     
