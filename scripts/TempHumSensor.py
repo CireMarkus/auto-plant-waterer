@@ -10,6 +10,11 @@ class TempHumSensor:
     
     
     def getTempFarenheit(self):
-        time.sleep(3)
+        time.sleep(2.5)
         return self.__dht.temp *(9.0/5.0) + 32.0
+    
+    def getHumidity(self):
+        time.sleep(2.5)
+        return self.__dht.humidity
+    
         
