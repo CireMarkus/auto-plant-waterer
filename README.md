@@ -22,8 +22,22 @@ An automated plant care system built with Python and basic electronics. The Auto
 - **Capacitive Soil Moisture Sensor** ([example](https://www.amazon.com/Analog-Capacitive-Soil-Moisture-Sensor/dp/B09NTTR8M9))  
 - **VEML7700** Lux Sensor (I²C)  
 - **DHT22** Temperature & Humidity Sensor (I²C)  
-- Jumper wires and breadboard (or soldered circuit)  
+- Jumper wires and breadboard (or soldered circuit)
+---
+## 📝 Key Scripts
+1. LightSensor.py
+   Measures ambient light intensity using the VEML7700 Lux Sensor.
+   Automatically adjusts sensor sensitivity based on light conditions for accurate readings.
+   Returns current light intensity in lux and voltage.
 
+2. MoistureSensor.py
+   Interfaces with a capacitive soil moisture sensor via MCP3008 ADC.
+   Calibrates moisture levels, setting bounds for dry and wet soil conditions.
+   Provides soil moisture level in voltage and ADC value.
+
+3. TempHumSensor.py
+   Reads temperature (°F) and humidity using the DHT22 sensor.
+   Provides accurate environmental data for plant health monitoring.
 ---
 
 ## 🚀 Getting Started
