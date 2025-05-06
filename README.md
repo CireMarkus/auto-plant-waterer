@@ -21,7 +21,7 @@ An automated plant care system built with Python and basic electronics. The Auto
 - **MCP3008** analog-to-digital converter  
 - **Capacitive Soil Moisture Sensor** ([example](https://www.amazon.com/Analog-Capacitive-Soil-Moisture-Sensor/dp/B09NTTR8M9))  
 - **VEML7700** Lux Sensor (I²C)  
-- **AHT20** Temperature & Humidity Sensor (I²C)  
+- **DHT22** Temperature & Humidity Sensor (I²C)  
 - Jumper wires and breadboard (or soldered circuit)  
 
 ---
