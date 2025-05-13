@@ -1,1 +1,6 @@
 .vscode/settings.json
+/scripts/bluetooth-testing/bin
+/scripts/bluetooth-testing/inlcude
+/scripts/bluetooth-testing/lib
+/scripts/bluetooth-testing/lib64
+scripts/bluetooth-testing/pyvenv.cfg
