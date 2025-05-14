@@ -12,10 +12,12 @@ errors = []
 
 while runs < 10:
     print("Run: {}".format(runs))
-    time.sleep(3)
+    
     try:
         print("Attempting to read DHT22 sensor")
+        time.sleep(2)
         temp = dht.temperature * (9/5) +32
+        time.sleep(2)
         hum = dht.humidity
         print("Temperature(F): {}, Humidity: {}".format(temp,hum))
         successfulRuns += 1
