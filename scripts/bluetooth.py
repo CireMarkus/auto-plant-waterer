@@ -12,7 +12,7 @@ from bless import (
     BlessServer,
     BlessGATTCharacteristic,
     GATTCharacteristicProperties,
-    GATTAttributePermissions
+    GATTAttributePermissions,
 )
 
 
