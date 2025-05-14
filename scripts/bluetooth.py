@@ -3,8 +3,8 @@ import logging
 import asyncio
 import threading
 import time
+import random
 
-from TempHumSensor import TempHumSensor
 
 from typing import Any, Union
 
@@ -20,8 +20,9 @@ from bless import (
 def update_characteristics():
     while True:
         # Read the temperature and humidity from the sensor
-        temp = sensor.getTempFarenheit()
-        humidity = sensor.getHumidity()
+        temp = random.uniform(60,80)
+        humidity = sensor.uniform(30,50)
+        print(f"Temperature: {temp} F, Humidity: {humidity} %")
         
         # Update the characteristics with the new values
         temp_characteristic.value = str(temp).encode("utf-8")
@@ -41,7 +42,6 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
     
     # Create a TempHumSensor instance
-    sensor = TempHumSensor()
     
     # Create a BlessServer instance
     server = BlessServer('BLE Test Server')
