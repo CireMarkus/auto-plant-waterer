@@ -51,11 +51,11 @@ if __name__ == "__main__":
     HUMIDITY_UUID = "00001809-0000-1000-8000-00805f9b34fc"
     
     # Define the properties and permissions for the characteristics
-    TEMP_PROPERTIES = GATTCharacteristicProperties.READ | GATTCharacteristicProperties.NOTIFY
-    HUMIDITY_PROPERTIES = GATTCharacteristicProperties.READ | GATTCharacteristicProperties.NOTIFY
+    TEMP_PROPERTIES = GATTCharacteristicProperties.read | GATTCharacteristicProperties.notify
+    HUMIDITY_PROPERTIES = GATTCharacteristicProperties.read | GATTCharacteristicProperties.notify
     
-    TEMP_PERMISSIONS = GATTAttributePermissions.READABLE
-    HUMIDITY_PERMISSIONS = GATTAttributePermissions.READABLE
+    TEMP_PERMISSIONS = GATTAttributePermissions.readable
+    HUMIDITY_PERMISSIONS = GATTAttributePermissions.readable
     
     # Create the temperature characteristic
     temp_characteristic = BlessGATTCharacteristic(
