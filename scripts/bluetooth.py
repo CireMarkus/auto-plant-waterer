@@ -44,7 +44,7 @@ if __name__ == "__main__":
     sensor = TempHumSensor()
     
     # Create a BlessServer instance
-    server = BlessServer()
+    server = BlessServer('BLE Test Server')
     
     # Define the UUIDs for the characteristics
     TEMP_UUID = "00001809-0000-1000-8000-00805f9b34fb"
