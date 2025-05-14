@@ -10,7 +10,7 @@ failedRuns = 0;
 errors = []
 
 
-while runs < 10000:
+while runs < 100:
     time.sleep(3)
     try:
         temp = dht.temperature * (9/5) +32
