@@ -49,6 +49,7 @@ if __name__ == "__main__":
     # Define the UUIDs for the characteristics
     TEMP_UUID = "00001809-0000-1000-8000-00805f9b34fb"
     HUMIDITY_UUID = "00001809-0000-1000-8000-00805f9b34fc"
+    SERVER_UUID = "00001809-0000-1000-8000-00805f9b34fd"
     
     # Define the properties and permissions for the characteristics
     TEMP_PROPERTIES = GATTCharacteristicProperties.read | GATTCharacteristicProperties.notify
@@ -72,8 +73,8 @@ if __name__ == "__main__":
         value=b"0",
     )
     # Add the characteristics to the server
-    server.add_new_characteristic(temp_characteristic)
-    server.add_new_characteristic(humidity_characteristic)
+    server.add_new_characteristic(SERVER_UUID,TEMP_UUID,temp_characteristic, TEMP_PROPERTIES, None, TEMP_PERMISSIONS)
+    server.add_new_characteristic(SERVER_UUID,HUMIDITY_UUID,humidity_characteristic, HUMIDITY_PROPERTIES, None, HUMIDITY_PERMISSIONS)
     # Start the server
     server.start()
     logger.info("BLE server started")
