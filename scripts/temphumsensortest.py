@@ -10,7 +10,7 @@ failedRuns = 0;
 errors = []
 
 
-while runs < 100:
+while runs < 10:
     print("Run: {}".format(runs))
     time.sleep(3)
     try:
