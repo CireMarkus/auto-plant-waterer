@@ -16,6 +16,41 @@ from bless import (
 )
 
 
+   
+    # Create a TempHumSensor instance
+    
+    # Create a BlessServer instance
+server = BlessServer('BLE Test Server')
+
+# Define the UUIDs for the characteristics
+TEMP_UUID = "00001809-0000-1000-8000-00805f9b34fb"
+HUMIDITY_UUID = "00001809-0000-1000-8000-00805f9b34fc"
+SERVER_UUID = "00001809-0000-1000-8000-00805f9b34fd"
+
+# Define the properties and permissions for the characteristics
+TEMP_PROPERTIES = GATTCharacteristicProperties.read | GATTCharacteristicProperties.notify
+HUMIDITY_PROPERTIES = GATTCharacteristicProperties.read | GATTCharacteristicProperties.notify
+
+TEMP_PERMISSIONS = GATTAttributePermissions.readable
+HUMIDITY_PERMISSIONS = GATTAttributePermissions.readable
+    
+
+# Create the temperature characteristic
+temp_characteristic = BlessGATTCharacteristic(
+    uuid=TEMP_UUID,
+    properties=TEMP_PROPERTIES,
+    permissions=TEMP_PERMISSIONS,
+    value=b"0",
+)
+# Create the humidity characteristic
+humidity_characteristic = BlessGATTCharacteristic(
+    uuid=HUMIDITY_UUID,
+    properties=HUMIDITY_PROPERTIES,
+    permissions=HUMIDITY_PERMISSIONS,
+    value=b"0",
+)
+
+
  # Define a function to update the characteristics
 def update_characteristics():
     while True:
@@ -40,38 +75,8 @@ def update_characteristics():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger(__name__)
-    
-    # Create a TempHumSensor instance
-    
-    # Create a BlessServer instance
-    server = BlessServer('BLE Test Server')
-    
-    # Define the UUIDs for the characteristics
-    TEMP_UUID = "00001809-0000-1000-8000-00805f9b34fb"
-    HUMIDITY_UUID = "00001809-0000-1000-8000-00805f9b34fc"
-    SERVER_UUID = "00001809-0000-1000-8000-00805f9b34fd"
-    
-    # Define the properties and permissions for the characteristics
-    TEMP_PROPERTIES = GATTCharacteristicProperties.read | GATTCharacteristicProperties.notify
-    HUMIDITY_PROPERTIES = GATTCharacteristicProperties.read | GATTCharacteristicProperties.notify
-    
-    TEMP_PERMISSIONS = GATTAttributePermissions.readable
-    HUMIDITY_PERMISSIONS = GATTAttributePermissions.readable
-    
-    # Create the temperature characteristic
-    temp_characteristic = BlessGATTCharacteristic(
-        uuid=TEMP_UUID,
-        properties=TEMP_PROPERTIES,
-        permissions=TEMP_PERMISSIONS,
-        value=b"0",
-    )
-    # Create the humidity characteristic
-    humidity_characteristic = BlessGATTCharacteristic(
-        uuid=HUMIDITY_UUID,
-        properties=HUMIDITY_PROPERTIES,
-        permissions=HUMIDITY_PERMISSIONS,
-        value=b"0",
-    )
+ 
+   
     # Add the characteristics to the server
     server.add_new_characteristic(SERVER_UUID,TEMP_UUID, TEMP_PROPERTIES, None, TEMP_PERMISSIONS)
     server.add_new_characteristic(SERVER_UUID,HUMIDITY_UUID, HUMIDITY_PROPERTIES, None, HUMIDITY_PERMISSIONS)
