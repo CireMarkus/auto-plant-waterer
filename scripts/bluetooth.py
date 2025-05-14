@@ -21,7 +21,7 @@ def update_characteristics():
     while True:
         # Read the temperature and humidity from the sensor
         temp = random.uniform(60,80)
-        humidity = sensor.uniform(30,50)
+        humidity = random.uniform(30,50)
         print(f"Temperature: {temp} F, Humidity: {humidity} %")
         
         # Update the characteristics with the new values
@@ -78,8 +78,6 @@ if __name__ == "__main__":
     # Start the server
     server.start()
     logger.info("BLE server started")
-    logger.info(f"Current temperature: {sensor.getTempFarenheit()} F")
-    logger.info(f"Current humidity: {sensor.getHumidity()} %")
    
     # Start a thread to update the characteristics
     update_thread = threading.Thread(target=update_characteristics)
