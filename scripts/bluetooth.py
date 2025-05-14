@@ -73,8 +73,8 @@ if __name__ == "__main__":
         value=b"0",
     )
     # Add the characteristics to the server
-    server.add_new_characteristic(SERVER_UUID,TEMP_UUID,temp_characteristic, TEMP_PROPERTIES, None, TEMP_PERMISSIONS)
-    server.add_new_characteristic(SERVER_UUID,HUMIDITY_UUID,humidity_characteristic, HUMIDITY_PROPERTIES, None, HUMIDITY_PERMISSIONS)
+    server.add_new_characteristic(SERVER_UUID,TEMP_UUID, TEMP_PROPERTIES, None, TEMP_PERMISSIONS)
+    server.add_new_characteristic(SERVER_UUID,HUMIDITY_UUID, HUMIDITY_PROPERTIES, None, HUMIDITY_PERMISSIONS)
     # Start the server
     server.start()
     logger.info("BLE server started")
