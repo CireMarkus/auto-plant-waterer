@@ -1,97 +1,84 @@
-import time
-import random
-import threading
+"""
+Example for a BLE 4.0 Server
+"""
+import sys
 import logging
+import asyncio
+import threading
 
-# Import the necessary classes from bless
-from bless import (
+from typing import Any, Union
+
+from bless import (  # type: ignore
     BlessServer,
-    BlessGATTService,
     BlessGATTCharacteristic,
     GATTCharacteristicProperties,
     GATTAttributePermissions,
 )
 
-# Set up logging for debugging and information
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("simple_ble_server")
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(name=__name__)
 
-# Define a unique UUID for the service
-SERVICE_UUID = "12345678-1234-5678-1234-56789abcdef1"
-
-# Define a unique UUID for the random number characteristic
-RANDOM_UUID = "12345678-1234-5678-1234-56789abcdef0"
-
-# Set the characteristic properties and permissions
-CHAR_PROPERTIES = GATTCharacteristicProperties.read | GATTCharacteristicProperties.notify
-CHAR_PERMISSIONS = GATTAttributePermissions.readable
-
-# Create the BLE server instance
-server = BlessServer(name="RandomNumberBLE")
-
-# Create the service
-service = BlessGATTService(SERVICE_UUID)
-
-# Create the characteristic for transmitting random numbers
-random_char = BlessGATTCharacteristic(
-    uuid=RANDOM_UUID,
-    properties=CHAR_PROPERTIES,
-    permissions=CHAR_PERMISSIONS,
-    value=b"0",  # Initial value as bytes
-)
-
-# Add the characteristic to the service
-service.add_characteristic(random_char)
-
-# Add the service to the server
-server.add_new_service(SERVICE_UUID)
-
-def update_random_number():
-    """
-    This function runs in a separate thread.
-    It generates a new random number every 2 seconds,
-    updates the BLE characteristic, and prints the value to the console.
-    """
-    while True:
-        # Generate a random integer between 0 and 100
-        rand_num = random.randint(0, 100)
-        logger.info(f"Generated random number: {rand_num}")
-
-        # Update the BLE characteristic value (must be bytes)
-        random_char.value = str(rand_num).encode("utf-8")
-
-        # Notify connected BLE clients of the new value
-
-        # Wait before generating the next number
-        time.sleep(2)
-        
-def random_char_read_callback(characteristic, **kwargs):
-    """
-    This function is called when the characteristic is read.
-    It sends the current value of the characteristic to the client.
-    """
-    logger.info(f"Characteristic read: {value.decode('utf-8')}")
-    return characteristic
-
-if __name__ == "__main__":
-    try:
-        # Start the BLE server
-        logger.info("Starting BLE server...")
-        server.start(
-            advertising_name="RandomNumberBLE",
-            service_uuids=[SERVICE_UUID],
-            manufacturer_data={0xFFFF: b"RandomNum"}
-        )
+# NOTE: Some systems require different synchronization methods.
+trigger: Union[asyncio.Event, threading.Event]
+if sys.platform in ["darwin", "win32"]:
+    trigger = threading.Event()
+else:
+    trigger = asyncio.Event()
 
 
-        # Start the random number update thread
-        updater = threading.Thread(target=update_random_number, daemon=True)
-        updater.start()
-        server.read_request = random_char_read_callback
+def read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray:
+    logger.debug(f"Reading {characteristic.value}")
+    return characteristic.value
 
-        # Keep the main thread alive to maintain the BLE server
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        logger.info("Shutting down BLE server.")
-        server.stop()
+
+def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs):
+    characteristic.value = value
+    logger.debug(f"Char value set to {characteristic.value}")
+    if characteristic.value == b"\x0f":
+        logger.debug("NICE")
+        trigger.set()
+
+
+async def run(loop):
+    trigger.clear()
+    # Instantiate the server
+    my_service_name = "Test Service"
+    server = BlessServer(name=my_service_name, loop=loop)
+    server.read_request_func = read_request
+    server.write_request_func = write_request
+
+    # Add Service
+    my_service_uuid = "A07498CA-AD5B-474E-940D-16F1FBE7E8CD"
+    await server.add_new_service(my_service_uuid)
+
+    # Add a Characteristic to the service
+    my_char_uuid = "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B"
+    char_flags = (
+        GATTCharacteristicProperties.read
+        | GATTCharacteristicProperties.write
+        | GATTCharacteristicProperties.indicate
+    )
+    permissions = GATTAttributePermissions.readable | GATTAttributePermissions.writeable
+    await server.add_new_characteristic(
+        my_service_uuid, my_char_uuid, char_flags, None, permissions
+    )
+
+    logger.debug(server.get_characteristic(my_char_uuid))
+    await server.start()
+    logger.debug("Advertising")
+    logger.info(f"Write '0xF' to the advertised characteristic: {my_char_uuid}")
+    if trigger.__module__ == "threading":
+        trigger.wait()
+    else:
+        await trigger.wait()
+
+    await asyncio.sleep(2)
+    logger.debug("Updating")
+    server.get_characteristic(my_char_uuid)
+    server.update_value(my_service_uuid, "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B")
+    await asyncio.sleep(5)
+    await server.stop()
+
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(run(loop))
