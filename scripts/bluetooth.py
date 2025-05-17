@@ -1,98 +1,84 @@
-import sys 
-import logging 
-import asyncio
-import threading
 import time
 import random
+import threading
+import logging
 
-
-from typing import Any, Union
-
+# Import the necessary classes from bless
 from bless import (
     BlessServer,
+    BlessGATTService,
     BlessGATTCharacteristic,
     GATTCharacteristicProperties,
     GATTAttributePermissions,
 )
 
+# Set up logging for debugging and information
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("simple_ble_server")
 
-   
-    # Create a TempHumSensor instance
-    
-    # Create a BlessServer instance
-server = BlessServer('BLE Test Server')
+# Define a unique UUID for the service
+SERVICE_UUID = "12345678-1234-5678-1234-56789abcdef1"
 
-# Define the UUIDs for the characteristics
-TEMP_UUID = "00001809-0000-1000-8000-00805f9b34fb"
-HUMIDITY_UUID = "00001809-0000-1000-8000-00805f9b34fc"
-SERVER_UUID = "00001809-0000-1000-8000-00805f9b34fd"
+# Define a unique UUID for the random number characteristic
+RANDOM_UUID = "12345678-1234-5678-1234-56789abcdef0"
 
-# Define the properties and permissions for the characteristics
-TEMP_PROPERTIES = GATTCharacteristicProperties.read | GATTCharacteristicProperties.notify
-HUMIDITY_PROPERTIES = GATTCharacteristicProperties.read | GATTCharacteristicProperties.notify
+# Set the characteristic properties and permissions
+CHAR_PROPERTIES = GATTCharacteristicProperties.read | GATTCharacteristicProperties.notify
+CHAR_PERMISSIONS = GATTAttributePermissions.readable
 
-TEMP_PERMISSIONS = GATTAttributePermissions.readable
-HUMIDITY_PERMISSIONS = GATTAttributePermissions.readable
-    
+# Create the BLE server instance
+server = BlessServer(name="RandomNumberBLE")
 
-# Create the temperature characteristic
-temp_characteristic = BlessGATTCharacteristic(
-    uuid=TEMP_UUID,
-    properties=TEMP_PROPERTIES,
-    permissions=TEMP_PERMISSIONS,
-    value=b"0",
-)
-# Create the humidity characteristic
-humidity_characteristic = BlessGATTCharacteristic(
-    uuid=HUMIDITY_UUID,
-    properties=HUMIDITY_PROPERTIES,
-    permissions=HUMIDITY_PERMISSIONS,
-    value=b"0",
+# Create the service
+service = BlessGATTService(SERVICE_UUID)
+
+# Create the characteristic for transmitting random numbers
+random_char = BlessGATTCharacteristic(
+    uuid=RANDOM_UUID,
+    properties=CHAR_PROPERTIES,
+    permissions=CHAR_PERMISSIONS,
+    value=b"0",  # Initial value as bytes
 )
 
+# Add the characteristic to the service
+service.add_characteristic(random_char)
 
- # Define a function to update the characteristics
-def update_characteristics():
+# Add the service to the server
+server.add_service(service)
+
+def update_random_number():
+    """
+    This function runs in a separate thread.
+    It generates a new random number every 2 seconds,
+    updates the BLE characteristic, and prints the value to the console.
+    """
     while True:
-        # Read the temperature and humidity from the sensor
-        temp = random.uniform(60,80)
-        humidity = random.uniform(30,50)
-        print(f"Temperature: {temp} F, Humidity: {humidity} %")
-        
-        # Update the characteristics with the new values
-        temp_characteristic.value = str(temp).encode("utf-8")
-        humidity_characteristic.value = str(humidity).encode("utf-8")
-        
-        # Notify connected clients of the new values
-        temp_characteristic.notify()
-        humidity_characteristic.notify()
-        
-        # Sleep for a while before updating again
-        time.sleep(2.5)
+        # Generate a random integer between 0 and 100
+        rand_num = random.randint(0, 100)
+        logger.info(f"Generated random number: {rand_num}")
 
+        # Update the BLE characteristic value (must be bytes)
+        random_char.value = str(rand_num).encode("utf-8")
 
+        # Notify connected BLE clients of the new value
+        random_char.notify()
+
+        # Wait before generating the next number
+        time.sleep(2)
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
-    logger = logging.getLogger(__name__)
- 
-   
-    # Add the characteristics to the server
-    server.add_new_characteristic(SERVER_UUID,TEMP_UUID, TEMP_PROPERTIES, None, TEMP_PERMISSIONS)
-    server.add_new_characteristic(SERVER_UUID,HUMIDITY_UUID, HUMIDITY_PROPERTIES, None, HUMIDITY_PERMISSIONS)
-    # Start the server
-    server.start()
-    logger.info("BLE server started")
-   
-    # Start a thread to update the characteristics
-    update_thread = threading.Thread(target=update_characteristics)
-    update_thread.daemon = True
-    update_thread.start()
-    # Run the server loop
     try:
+        # Start the BLE server
+        logger.info("Starting BLE server...")
+        server.start()
+
+        # Start the random number update thread
+        updater = threading.Thread(target=update_random_number, daemon=True)
+        updater.start()
+
+        # Keep the main thread alive to maintain the BLE server
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        logger.info("Stopping BLE server")
+        logger.info("Shutting down BLE server.")
         server.stop()
-        sys.exit(0)
