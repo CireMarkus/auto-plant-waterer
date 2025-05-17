@@ -41,10 +41,10 @@ random_char = BlessGATTCharacteristic(
 )
 
 # Add the characteristic to the service
-service.add_characteristic(random_char)
+service.add_new_characteristic(random_char)
 
 # Add the service to the server
-server.add_service(service)
+server.add_new_service(service)
 
 def update_random_number():
     """
