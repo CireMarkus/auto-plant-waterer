@@ -77,7 +77,12 @@ if __name__ == "__main__":
     try:
         # Start the BLE server
         logger.info("Starting BLE server...")
-        server.start()
+        server.start(
+            advertising_name="RandomNumberBLE",
+            service_uuids=[SERVICE_UUID],
+            manufacturer_data={0xFFFF: b"RandomNum"}
+        )
+
 
         # Start the random number update thread
         updater = threading.Thread(target=update_random_number, daemon=True)
