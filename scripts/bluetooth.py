@@ -61,10 +61,17 @@ def update_random_number():
         random_char.value = str(rand_num).encode("utf-8")
 
         # Notify connected BLE clients of the new value
-        random_char.notify()
 
         # Wait before generating the next number
         time.sleep(2)
+        
+def random_char_read_callback(characteristic, **kwargs):
+    """
+    This function is called when the characteristic is read.
+    It sends the current value of the characteristic to the client.
+    """
+    logger.info(f"Characteristic read: {value.decode('utf-8')}")
+    return characteristic
 
 if __name__ == "__main__":
     try:
@@ -75,6 +82,7 @@ if __name__ == "__main__":
         # Start the random number update thread
         updater = threading.Thread(target=update_random_number, daemon=True)
         updater.start()
+        server.read_request_func = random_char_read_callback
 
         # Keep the main thread alive to maintain the BLE server
         while True:
