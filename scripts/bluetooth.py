@@ -87,7 +87,7 @@ if __name__ == "__main__":
         # Start the random number update thread
         updater = threading.Thread(target=update_random_number, daemon=True)
         updater.start()
-        server.read_request_func = random_char_read_callback
+        server.read_request = random_char_read_callback
 
         # Keep the main thread alive to maintain the BLE server
         while True:
