@@ -15,6 +15,15 @@ from bless import (
 import bleak
 
 
+class CustomBleakGattDescriptor(
+    bleak.backends.descriptor.BleakGattDescriptor
+):
+    """Custom GATT Descriptor for testing purposes."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.value = bytearray([0x00, 0x00])  # Default value for the descriptor
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(name="TestServer"+__name__)
 
@@ -45,6 +54,7 @@ def read_request(characteristic: BlessGATTCharacteristic, **kwargs: Any) -> byte
 
 
 
+
 char_flags = (
     GATTCharacteristicProperties.read
     | GATTCharacteristicProperties.indicate
@@ -58,6 +68,9 @@ service_uuid = "A07498CA-AD5B-474E-940D-16F1FBE7E8CD"
 
 temp_char_uuid = "A07498CA-AD5B-474E-940D-16F1FBE7E8CE"
 hum_char_uuid = "A07498CA-AD5B-474E-940D-16F1FBE7E8CF"
+
+
+
 
 async def run(loop):
     trigger.clear()
@@ -86,23 +99,32 @@ async def run(loop):
         permissions
     )
     
-    await server.get_characteristic(temp_char_uuid).add_descriptor(bleak.backends.descriptor.BleakGATTDescriptor(
-        uuid="2901",  # Characteristic User Description UUID
-        value=b"Temperature in Celsius",
-        permissions=GATTAttributePermissions.readable
-    ))
-    await server.get_characteristic(hum_char_uuid).add_descriptor(bleak.backends.descriptor.BleakGATTDescriptor(
-        uuid="2901",  # Characteristic User Description UUID
-        value=b"Humidity in Percentage",
-        permissions=GATTAttributePermissions.readable
-    ))
+    #Add descriptors to the characteristics
+    server.get_characteristic(temp_char_uuid).add_descriptor(
+        CustomBleakGattDescriptor(
+            handle=0x2901,  # User Description Descriptor
+            uuid="2901",
+            characteristic=server.get_characteristic(temp_char_uuid),
+        )
+    )
+    
+    server.get_characteristic(hum_char_uuid).add_descriptor(
+        CustomBleakGattDescriptor(
+            handle=0x2902,  # User Description Descriptor
+            uuid="2902",
+            characteristic=server.get_characteristic(hum_char_uuid),
+        )
+    )
+    # Set the description for the characteristics
+    server.get_characteristic(temp_char_uuid).get_descriptor("2901").description = "Temperature Sensor"
+    server.get_characteristic(hum_char_uuid).get_descriptor("2902").description = "Humidity Sensor"
     
     logger.debug(server.get_characteristic(temp_char_uuid))
     logger.debug(server.get_characteristic(hum_char_uuid))
     await server.start()
     logger.debug("Advertising")
     print("Advertising started. Press Ctrl+C to stop.")
-    
+   
     await trigger.wait()
     
     # await asyncio.sleep(2)
