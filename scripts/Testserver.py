@@ -59,6 +59,10 @@ class CustomBleakGATTDescriptor(bleak.backends.descriptor.BleakGATTDescriptor):
     def description(self) -> str:
         """A text description of what this descriptor represents"""
         return _descriptor_descriptions.get(self.uuid, ["Unknown"])[0]
+    @property
+    def description(self,value: str):
+        """Set a text description of what this descriptor represents"""
+        self._description = value
 
 
 logging.basicConfig(level=logging.DEBUG)
