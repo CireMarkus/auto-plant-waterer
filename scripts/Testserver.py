@@ -94,13 +94,13 @@ async def run(loop):
     
     await trigger.wait()
     
-    await asyncio.sleep(2)
-    logger.debug("Updating")
-    server.get_characteristic(temp_char_uuid)
-    server.update_value(service_uuid, temp_char_uuid)
-    server.get_characteristic(hum_char_uuid)
-    server.update_value(service_uuid, hum_char_uuid)
-    await asyncio.sleep(5)
+    # await asyncio.sleep(2)
+    # logger.debug("Updating")
+    # server.get_characteristic(temp_char_uuid)
+    # server.update_value(service_uuid, temp_char_uuid)
+    # server.get_characteristic(hum_char_uuid)
+    # server.update_value(service_uuid, hum_char_uuid)
+    # await asyncio.sleep(5)
     
     if(KeyboardInterrupt):
         logger.info("KeyboardInterrupt received, stopping server.")
