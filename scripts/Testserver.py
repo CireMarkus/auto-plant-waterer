@@ -22,11 +22,17 @@ trigger = threading.Event() if sys.platform in ["darwin", "win32"] else asyncio.
 
 def temp_test_data():
     """Generate random temperature data."""
-    return random.randint(0,100)  # Simulating a temperature value between 0 and 100}
+    value = random.randint(0, 100)  # Simulating a temperature value between 0 and 100
+    logger.debug(f"Generated temperature data: {value}")
+    print(f"Generated temperature data: {value}")
+    return  value # Simulating a temperature value between 0 and 100}
 
 def hum_test_data():
     """Generate random humidity data."""
-    return random.randint(0,100)  # Simulating a humidity value between 0 and 100
+    value = random.randint(0, 100)  # Simulating a humidity value between 0 and 100
+    logger.debug(f"Generated humidity data: {value}")
+    print(f"Generated humidity data: {value}")
+    return value # Simulating a humidity value between 0 and 100
 
 def read_request(characteristic: BlessGATTCharacteristic, **kwargs: Any) -> bytearray:
     logger.debug(f"Reading {characteristic.description}: {value}")
@@ -65,7 +71,7 @@ async def run(loop):
         service_uuid,
         temp_char_uuid,
         char_flags,
-        temp_test_data().encode('utf-8'),
+        temp_test_data().to_bytes(2, 'little'),
         permissions
     )
     
@@ -73,7 +79,7 @@ async def run(loop):
         service_uuid,
         hum_char_uuid,
         char_flags,
-        hum_test_data().encode('utf-8'),
+        hum_test_data().to_bytes(2, 'little'),
         permissions
     )
     
