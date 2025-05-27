@@ -39,6 +39,7 @@ def read_request(characteristic: BlessGATTCharacteristic):
         value = 0  # Default value for unknown characteristics
         characteristic.update_value(str(value).encode('utf-8'))
     logger.debug(f"Reading {characteristic.description}: {value}")
+    print(f"Reading {characteristic.description}: {value}")
     
 
 
@@ -87,6 +88,7 @@ async def run(loop):
     logger.debug(server.get_characteristic(hum_char_uuid))
     await server.start()
     logger.debug("Advertising")
+    print("Advertising started. Press Ctrl+C to stop.")
     
     await trigger.wait()
     
@@ -100,5 +102,6 @@ async def run(loop):
     
     if(KeyboardInterrupt):
         logger.info("KeyboardInterrupt received, stopping server.")
+        print("KeyboardInterrupt received, stopping server.")
         await server.stop()
     
