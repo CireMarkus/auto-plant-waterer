@@ -15,14 +15,52 @@ from bless import (
 import bleak
 
 
-class CustomBleakGattDescriptor(
-    bleak.backends.descriptor.BleakGATTDescriptor
-):
-    """Custom GATT Descriptor for testing purposes."""
+class CustomBleakGATTDescriptor(bleak.backends.descriptor.BleakGATTDescriptor):
+    """The Bleak representation of a GATT Descriptor"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.value = bytearray([0x00, 0x00])  # Default value for the descriptor
+    def __init__(
+        self, obj: Any, handle: int, uuid: str, characteristic: BleakGATTCharacteristic
+    ):
+        """
+        Args:
+            obj: The backend-specific object for the descriptor.
+            handle: The handle of the descriptor.
+            uuid: The UUID of the descriptor.
+            characteristic: The characteristic that this descriptor belongs to.
+        """
+        self.obj = obj
+        self._handle = handle
+        self._uuid = uuid
+        self._characteristic = characteristic
+
+    def __str__(self):
+        return f"{self.uuid} (Handle: {self.handle}): {self.description}"
+
+    @property
+    def characteristic_uuid(self) -> str:
+        """UUID for the characteristic that this descriptor belongs to"""
+        return self._characteristic.uuid
+
+    @property
+    def characteristic_handle(self) -> int:
+        """handle for the characteristic that this descriptor belongs to"""
+        return self._characteristic.handle
+
+    @property
+    def uuid(self) -> str:
+        """UUID for this descriptor"""
+        return self._uuid
+
+    @property
+    def handle(self) -> int:
+        """Integer handle for this descriptor"""
+        return self._handle
+
+    @property
+    def description(self) -> str:
+        """A text description of what this descriptor represents"""
+        return _descriptor_descriptions.get(self.uuid, ["Unknown"])[0]
+
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(name="TestServer"+__name__)
