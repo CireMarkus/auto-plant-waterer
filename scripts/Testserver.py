@@ -36,8 +36,8 @@ def hum_test_data():
     return value # Simulating a humidity value between 0 and 100
 
 def read_request(characteristic: BlessGATTCharacteristic, **kwargs: Any) -> bytearray:
-    logger.debug(f"Reading {characteristic.description}: {characteristic.value}")
-    print(f"Reading {characteristic.description}: {characteristic.value}")
+    logger.debug(f"Reading {characteristic.uuid}: {characteristic.value}")
+    print(f"Reading {characteristic.uuid}: {characteristic.value}")
     return characteristic.value
     
 
@@ -76,7 +76,7 @@ async def run(loop):
         service_uuid,
         temp_char_uuid,
         char_flags,
-        temp_test_data().to_bytes(2, 'little'),
+        temp_test_data().to_bytes(10, 'little'),
         permissions
     )
     
@@ -84,7 +84,7 @@ async def run(loop):
         service_uuid,
         hum_char_uuid,
         char_flags,
-        hum_test_data().to_bytes(2, 'little'),
+        hum_test_data().to_bytes(10, 'little'),
         permissions
     )
     
