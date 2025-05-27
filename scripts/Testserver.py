@@ -4,12 +4,15 @@ import threading
 import random
 import sys
 from typing import Any, Union
+import bleak.backends
+import bleak.backends.descriptor
 from bless import (
     BlessServer,
     BlessGATTCharacteristic,
     GATTCharacteristicProperties,
     GATTAttributePermissions,
 )
+import bleak
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -83,8 +86,16 @@ async def run(loop):
         permissions
     )
     
-    await server.get_characteristic(temp_char_uuid).description = "Temperature"
-    await server.get_characteristic(hum_char_uuid).description = "Humidity"
+    await server.get_characteristic(temp_char_uuid).add_descriptor(bleak.backends.descriptor.BleakGATTDescriptor(
+        uuid="2901",  # Characteristic User Description UUID
+        value=b"Temperature in Celsius",
+        permissions=GATTAttributePermissions.readable
+    ))
+    await server.get_characteristic(hum_char_uuid).add_descriptor(bleak.backends.descriptor.BleakGATTDescriptor(
+        uuid="2901",  # Characteristic User Description UUID
+        value=b"Humidity in Percentage",
+        permissions=GATTAttributePermissions.readable
+    ))
     
     logger.debug(server.get_characteristic(temp_char_uuid))
     logger.debug(server.get_characteristic(hum_char_uuid))
