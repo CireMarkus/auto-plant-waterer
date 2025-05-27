@@ -19,7 +19,7 @@ class CustomBleakGATTDescriptor(bleak.backends.descriptor.BleakGATTDescriptor):
     """The Bleak representation of a GATT Descriptor"""
 
     def __init__(
-        self, obj: Any, handle: int, uuid: str, characteristic: BleakGATTCharacteristic
+        self, obj: Any, handle: int, uuid: str, characteristic: BlessGATTCharacteristic
     ):
         """
         Args:
