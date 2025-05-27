@@ -12,58 +12,6 @@ from bless import (
     GATTCharacteristicProperties,
     GATTAttributePermissions,
 )
-import bleak
-
-
-class CustomBleakGATTDescriptor(bleak.backends.descriptor.BleakGATTDescriptor):
-    """The Bleak representation of a GATT Descriptor"""
-
-    def __init__(
-        self, handle: int, uuid: str, characteristic: BlessGATTCharacteristic
-    ):
-        """
-        Args:
-            obj: The backend-specific object for the descriptor.
-            handle: The handle of the descriptor.
-            uuid: The UUID of the descriptor.
-            characteristic: The characteristic that this descriptor belongs to.
-        """
-        self._handle = handle
-        self._uuid = uuid
-        self._characteristic = characteristic
-
-    def __str__(self):
-        return f"{self.uuid} (Handle: {self.handle}): {self.description}"
-
-    @property
-    def characteristic_uuid(self) -> str:
-        """UUID for the characteristic that this descriptor belongs to"""
-        return self._characteristic.uuid
-
-    @property
-    def characteristic_handle(self) -> int:
-        """handle for the characteristic that this descriptor belongs to"""
-        return self._characteristic.handle
-
-    @property
-    def uuid(self) -> str:
-        """UUID for this descriptor"""
-        return self._uuid
-
-    @property
-    def handle(self) -> int:
-        """Integer handle for this descriptor"""
-        return self._handle
-
-    @property
-    def description(self) -> str:
-        """A text description of what this descriptor represents"""
-        return _descriptor_descriptions.get(self.uuid, ["Unknown"])[0]
-    @property
-    def description(self,value: str):
-        """Set a text description of what this descriptor represents"""
-        self._description = value
-
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(name="TestServer"+__name__)
@@ -140,25 +88,6 @@ async def run(loop):
         permissions
     )
     
-    #Add descriptors to the characteristics
-    server.get_characteristic(temp_char_uuid).add_descriptor(
-        CustomBleakGATTDescriptor(
-            handle=0x2901,  # User Description Descriptor
-            uuid="2901",
-            characteristic=server.get_characteristic(temp_char_uuid),
-        )
-    )
-    
-    server.get_characteristic(hum_char_uuid).add_descriptor(
-        CustomBleakGATTDescriptor(
-            handle=0x2902,  # User Description Descriptor
-            uuid="2902",
-            characteristic=server.get_characteristic(hum_char_uuid),
-        )
-    )
-    # Set the description for the characteristics
-    server.get_characteristic(temp_char_uuid).get_descriptor("2901").description = "Temperature Sensor"
-    server.get_characteristic(hum_char_uuid).get_descriptor("2902").description = "Humidity Sensor"
     
     logger.debug(server.get_characteristic(temp_char_uuid))
     logger.debug(server.get_characteristic(hum_char_uuid))
