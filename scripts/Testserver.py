@@ -71,14 +71,18 @@ async def run(loop):
     
     #Add characteristics to the service
     await server. add_new_characteristic(
+        service_uuid,
         temp_char_uuid,
         char_flags,
+        None,
         permissions
     )
     
     await server.add_new_characteristic(
+        service_uuid,
         hum_char_uuid,
         char_flags,
+        None,
         permissions
     )
     
