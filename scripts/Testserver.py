@@ -73,15 +73,13 @@ async def run(loop):
     await server. add_new_characteristic(
         temp_char_uuid,
         char_flags,
-        permissions,
-        description="Temperature"
+        permissions
     )
     
     await server.add_new_characteristic(
         hum_char_uuid,
         char_flags,
-        permissions,
-        description="Humidity"
+        permissions
     )
     
     logger.debug(server.get_characteristic(temp_char_uuid))
