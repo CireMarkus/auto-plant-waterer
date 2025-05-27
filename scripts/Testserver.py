@@ -96,17 +96,18 @@ async def run(loop):
     print("Advertising started. Press Ctrl+C to stop.")
    
     
-    await asyncio.sleep(2)
+    
     logger.debug("Updating")
     print("Updating values...")
     server.get_characteristic(temp_char_uuid)
     await server.update_value(service_uuid, temp_char_uuid)
     server.get_characteristic(hum_char_uuid)
     await server.update_value(service_uuid, hum_char_uuid)
-    await asyncio.sleep(5)
+    
+    trigger.wait()
     
     
     
     
 loop = asyncio.get_event_loop()
-loop.run_forever()
+loop.run_until_complete(run(loop))
