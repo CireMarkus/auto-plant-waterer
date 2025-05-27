@@ -28,25 +28,16 @@ def hum_test_data():
     """Generate random humidity data."""
     return random.randint(0,100)  # Simulating a humidity value between 0 and 100
 
-def read_request(characteristic: BlessGATTCharacteristic):
-    if characteristic.description == "Temperature":
-        value = temp_test_data()
-        characteristic.update_value(str(value).encode('utf-8'))
-    elif characteristic.description == "Humidity":
-        value = hum_test_data()
-        characteristic.update_value(str(value).encode('utf-8'))
-    else:
-        value = 0  # Default value for unknown characteristics
-        characteristic.update_value(str(value).encode('utf-8'))
+def read_request(characteristic: BlessGATTCharacteristic, **kwargs: Any) -> bytearray:
     logger.debug(f"Reading {characteristic.description}: {value}")
     print(f"Reading {characteristic.description}: {value}")
+    return characteristic.value
     
 
 
 
 char_flags = (
     GATTCharacteristicProperties.read
-    | GATTCharacteristicProperties.write
     | GATTCharacteristicProperties.indicate
 )
 permissions = (
@@ -74,7 +65,7 @@ async def run(loop):
         service_uuid,
         temp_char_uuid,
         char_flags,
-        None,
+        temp_test_data().encode('utf-8'),
         permissions
     )
     
@@ -82,7 +73,7 @@ async def run(loop):
         service_uuid,
         hum_char_uuid,
         char_flags,
-        None,
+        hum_test_data().encode('utf-8'),
         permissions
     )
     
@@ -95,11 +86,12 @@ async def run(loop):
     await trigger.wait()
     
     # await asyncio.sleep(2)
-    # logger.debug("Updating")
-    # server.get_characteristic(temp_char_uuid)
-    # server.update_value(service_uuid, temp_char_uuid)
-    # server.get_characteristic(hum_char_uuid)
-    # server.update_value(service_uuid, hum_char_uuid)
+    logger.debug("Updating")
+    print("Updating values...")
+    server.get_characteristic(temp_char_uuid)
+    await server.update_value(service_uuid, temp_char_uuid)
+    server.get_characteristic(hum_char_uuid)
+    await server.update_value(service_uuid, hum_char_uuid)
     # await asyncio.sleep(5)
     
     if(KeyboardInterrupt):
