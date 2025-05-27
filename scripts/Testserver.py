@@ -95,7 +95,6 @@ async def run(loop):
     logger.debug("Advertising")
     print("Advertising started. Press Ctrl+C to stop.")
    
-    await trigger.wait()
     
     # await asyncio.sleep(2)
     logger.debug("Updating")
