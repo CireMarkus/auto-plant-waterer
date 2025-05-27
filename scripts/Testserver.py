@@ -16,7 +16,7 @@ import bleak
 
 
 class CustomBleakGattDescriptor(
-    bleak.backends.descriptor.BleakGattDescriptor
+    bleak.backends.descriptor.BleakGATTDescriptor
 ):
     """Custom GATT Descriptor for testing purposes."""
 
