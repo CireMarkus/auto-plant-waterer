@@ -94,9 +94,7 @@ async def run(loop):
     await server.start()
     logger.debug("Advertising")
     print("Advertising started. Press Ctrl+C to stop.")
-    server.get_characteristic(temp_char_uuid).value(temp_test_data().to_bytes(2, 'little'))
     server.update_value(service_uuid, temp_char_uuid)
-    server.get_characteristic(hum_char_uuid).value(hum_test_data().to_bytes(2, 'little'))
     server.update_value(service_uuid, hum_char_uuid)
     if trigger.__module__ == "threading":
         trigger.wait()
