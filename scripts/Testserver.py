@@ -100,9 +100,9 @@ async def run(loop):
     logger.debug("Updating")
     print("Updating values...")
     server.get_characteristic(temp_char_uuid)
-    await server.update_value(service_uuid, temp_char_uuid)
+    server.update_value(service_uuid, temp_char_uuid)
     server.get_characteristic(hum_char_uuid)
-    await server.update_value(service_uuid, hum_char_uuid)
+    server.update_value(service_uuid, hum_char_uuid)
     
     trigger.wait()
     
