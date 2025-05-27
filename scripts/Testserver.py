@@ -105,3 +105,6 @@ async def run(loop):
         print("KeyboardInterrupt received, stopping server.")
         await server.stop()
     
+    
+loop = asyncio.get_event_loop()
+loop.run_until_complete(run(loop))
