@@ -139,7 +139,7 @@ async def run(loop):
     
     #Add descriptors to the characteristics
     server.get_characteristic(temp_char_uuid).add_descriptor(
-        CustomBleakGattDescriptor(
+        CustomBleakGATTDescriptor(
             handle=0x2901,  # User Description Descriptor
             uuid="2901",
             characteristic=server.get_characteristic(temp_char_uuid),
@@ -147,7 +147,7 @@ async def run(loop):
     )
     
     server.get_characteristic(hum_char_uuid).add_descriptor(
-        CustomBleakGattDescriptor(
+        CustomBleakGATTDescriptor(
             handle=0x2902,  # User Description Descriptor
             uuid="2902",
             characteristic=server.get_characteristic(hum_char_uuid),
