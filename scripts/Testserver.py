@@ -105,10 +105,6 @@ async def run(loop):
     server.update_value(service_uuid, hum_char_uuid)
     # await asyncio.sleep(5)
     
-    if(KeyboardInterrupt):
-        logger.info("KeyboardInterrupt received, stopping server.")
-        print("KeyboardInterrupt received, stopping server.")
-        await server.stop()
     
     
 loop = asyncio.get_event_loop()
