@@ -94,16 +94,19 @@ async def run(loop):
     await server.start()
     logger.debug("Advertising")
     print("Advertising started. Press Ctrl+C to stop.")
-   
+    if trigger.__module__ == "threading":
+        trigger.wait()
+    else:
+        await trigger.wait()
     
-    
+    await asyncio.sleep(2)
     logger.debug("Updating")
     print("Updating values...")
-    server.get_characteristic(temp_char_uuid)
+    server.get_characteristic(temp_char_uuid).value(temp_test_data().to_bytes(2, 'little'))
     server.update_value(service_uuid, temp_char_uuid)
-    server.get_characteristic(hum_char_uuid)
+    server.get_characteristic(hum_char_uuid).value(hum_test_data().to_bytes(2, 'little'))
     server.update_value(service_uuid, hum_char_uuid)
-    
+    await asyncio.sleep(2)
     trigger.wait()
     
     
