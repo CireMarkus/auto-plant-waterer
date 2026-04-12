@@ -4,3 +4,8 @@
 /scripts/lib
 /scripts/lib64
 scripts/pyvenv.cfg
+**.pyc
+**.code-workspace
+**/launch.json
+scripts/kali-archive-keyring_2020.2_all.deb
+.coverage
