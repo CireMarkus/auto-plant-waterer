@@ -57,6 +57,8 @@ class SystemNetOutUtilTask(BaseSystemUtilTask):
     
     def __init__(self):
         super(SystemNetOutUtilTask,self).__init__(name=ConfigConst.NET_OUT_UTIL_NAME , typeID=ConfigConst.NET_OUT_UTIL_TYPE)
+    
+    def getTelemetryValue(self)-> float:
         
         self.interval = 1
         stats_before = psutil.net_io_counters()
