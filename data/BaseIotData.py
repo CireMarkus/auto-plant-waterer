@@ -66,5 +66,60 @@ class BaseIotData(object):
     def hasErrorFlag(self):
         return self.hasError
     
+    def setElevation(self, val: float):
+        self.elevation = val
+    
+    def setLatitude(self, val: float):
+        self.latitude = val
+        
+    def setLongitude(self, val: float):
+        self.longitude = val
+        
+    def setLocationID(self, idStr: str):
+        if idStr: 
+            self.locationID = idStr
+            
+    def setName(self, name: str):
+        if name: 
+            self.name = name
+            
+    def setStatusCode(self, val: int):
+        self.statusCode = val 
+        if val < 0: 
+            self.hasError = True
+            
+    def setTypeID(self, val: int):
+        self.typeID = val
+    
+    def updateData(self, data):
+        if data and isinstance(data,BaseIotData):
+            self.setName(data.getName())
+            self.setTypeID(data.getTypeID())
+            self.setStatusCode(data.getStatusCode())
+            self.setElevation(data.getElevation())
+            self.setLatitude(data.getLatitude())
+            self.setLongitude(data.getLongitude())
+            self.setLocationID(data.getLocationID())
+
+            self.updateTimeStamp()
+
+            self._handleUpdateData(data)
+    
     def updateTimeStamp(self): 
         self.timeStamp = str(datetime.now(timezone.utc).isoformat())
+        
+
+    def __str__(self):
+        return '{}={},{}={},{}={},{}={},{}={},{}={},{}={},{}={},{}={}'.format(
+			ConfigConst.NAME_PROP, self.name,
+			ConfigConst.TYPE_ID_PROP, self.typeID,
+			ConfigConst.TIMESTAMP_PROP, self.timeStamp,
+			ConfigConst.STATUS_CODE_PROP, self.statusCode,
+			ConfigConst.HAS_ERROR_PROP, self.hasError,
+			ConfigConst.LOCATION_ID_PROP, self.locationID,
+			ConfigConst.ELEVATION_PROP, self.elevation,
+			ConfigConst.LATITUDE_PROP, self.latitude,
+			ConfigConst.LONGITUDE_PROP, self.longitude)
+    
+    def _handleUpdateData(self,data):
+        pass
