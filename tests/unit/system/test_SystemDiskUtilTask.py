@@ -18,5 +18,5 @@ class SystemCpuUtilTaskTest(unittest.TestCase):
         val = self.diskUtilTask.getTelemetryValue()
         
         self.assertGreaterEqual(val, 0.0)
-        logging.info("Disk utilization: %s%", str(val))
+        logging.info(f"Disk utilization: {val}%")
         

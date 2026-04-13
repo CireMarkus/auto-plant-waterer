@@ -18,5 +18,5 @@ class SystemCpuUtilTaskTest(unittest.TestCase):
         val = self.cpuUtilTask.getTelemetryValue()
         
         self.assertGreaterEqual(val, 0.0)
-        logging.info("CPU utilization: %s%", str(val))
+        logging.info(f"CPU utilization: {val}%")
         

@@ -18,5 +18,5 @@ class SystemNetOutUtilTaskTest(unittest.TestCase):
         val = self.NetOutUtilTask.getTelemetryValue()
         
         self.assertGreaterEqual(val, 0.0)
-        logging.info("Net Out utilization: %s%", str(val))
+        logging.info(f"Net Out utilization: {val} bytes.")
         

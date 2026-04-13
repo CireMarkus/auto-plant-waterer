@@ -16,5 +16,5 @@ class SystemMemUtilTaskTest(unittest.TestCase):
         val = self.memUtilTask.getTelemetryValue()
         
         self.assertGreaterEqual(val,0.0)
-        logging.info("CPU utilization: %s%",str(val))\
+        logging.info(f"Memory utilization: {val}%")
             
