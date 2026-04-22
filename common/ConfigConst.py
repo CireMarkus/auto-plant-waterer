@@ -57,7 +57,10 @@ NET_IN_UTIL_NAME  = 'DeviceNetInUtil'
 NET_OUT_UTIL_NAME = 'DeviceNetOutUtil'
 
 #Sensor Constants
-
+LIGHT_SENSOR_NAME = 'veml7700 lights sensor'
+LIGHT_SENSOR_TYPE = 1
+LIGHT_SENSOR_FLOOR = None
+LIGHT_SENSOR_CEILING = None
 
 PLANTMONITOR_DEVICE = "Plant Monitor"
 DEVICE_ID_KEY          = 'deviceID'
