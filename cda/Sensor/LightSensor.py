@@ -61,7 +61,7 @@ class LightSensor(BaseSensor):
         return (self._sensor.light,self._sensor.lux)
     
     def __str__(self):
-        print(f"Current light value: {self._sensor.light} \
+        return(f"Current light value: {self._sensor.light} \
             Current lux value: {self._sensor.lux}")
         
 if __name__ == "__main__":
