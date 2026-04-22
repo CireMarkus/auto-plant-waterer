@@ -18,20 +18,20 @@ class LightSensor(BaseSensor):
             self._sensor = adafruit_veml7700.VEML7700(board.I2C())
         except Exception as e:
             logging.error(f"The following error has occured during initialization: {e}")
-        self.__ITARRAY =[self._sensor.ALS_25MS,self._sensor.ALS_50MS,self._sensor.ALS_100MS,self._sensor.ALS_200MS,self._sensor.ALS_400MS,self._sensor.ALS_800MS]
-        self.__GAINARRAY = [self._sensor.ALS_GAIN_1_8,self._sensor.ALS_GAIN_1_4,self._sensor.ALS_GAIN_1,self._sensor.ALS_GAIN_2]
-        self.__gainIndex = 0
-        self.__itIndex = 0
-        self._sensor.light_integration_time = self.__ITARRAY[self.__itIndex]
-        self._sensor.light_gain = self.__GAINARRAY[self.__gainIndex]
+        self._ITARRAY =[self._sensor.ALS_25MS,self._sensor.ALS_50MS,self._sensor.ALS_100MS,self._sensor.ALS_200MS,self._sensor.ALS_400MS,self._sensor.ALS_800MS]
+        self._GAINARRAY = [self._sensor.ALS_GAIN_1_8,self._sensor.ALS_GAIN_1_4,self._sensor.ALS_GAIN_1,self._sensor.ALS_GAIN_2]
+        self._gainIndex = 0
+        self._itIndex = 0
+        self._sensor.light_integration_time = self._ITARRAY[self._itIndex]
+        self._sensor.light_gain = self._GAINARRAY[self._gainIndex]
 
     def _autoAdjust(self):
-        raw_light = self.__sensor.light
+        raw_light = self._sensor.light
         if 500 <= raw_light <= 8000:
             return # Already in a stable linear range
 
         # 1. Calculate what the sensitivity SHOULD be to hit a target of 5000
-        current_sensitivity = self.__GAINARRAY[self.__gainIndex] * self.__ITARRAY[self.__itIndex]
+        current_sensitivity = self._GAINARRAY[self._gainIndex] * self._ITARRAY[self._itIndex]
         target_sensitivity = (5000 / raw_light) * current_sensitivity
 
         # 2. Find the best Gain/IT combination to hit that target_sensitivity
@@ -40,8 +40,8 @@ class LightSensor(BaseSensor):
         best_it_idx = 0
         min_diff = float('inf')
 
-        for g_idx, g_val in enumerate(self.__GAINARRAY):
-            for it_idx, it_val in enumerate(self.__ITARRAY):
+        for g_idx, g_val in enumerate(self._GAINARRAY):
+            for it_idx, it_val in enumerate(self._ITARRAY):
                 test_sensitivity = g_val * it_val
                 diff = abs(test_sensitivity - target_sensitivity)
                 
@@ -51,10 +51,10 @@ class LightSensor(BaseSensor):
                     best_it_idx = it_idx
 
         # 3. Apply the settings
-        self.__gainIndex = best_gain_idx
-        self.__itIndex = best_it_idx
-        self.__sensor.light_gain = self.__GAINARRAY[self.__gainIndex]
-        self.__sensor.light_integration_time = self.__ITARRAY[self.__itIndex]
+        self._gainIndex = best_gain_idx
+        self._itIndex = best_it_idx
+        self._sensor.light_gain = self._GAINARRAY[self._gainIndex]
+        self._sensor.light_integration_time = self._ITARRAY[self._itIndex]
         
     def getTelemetry(self) -> tuple:
         self._autoAdjust()
