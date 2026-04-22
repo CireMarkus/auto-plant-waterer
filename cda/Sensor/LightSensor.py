@@ -61,10 +61,13 @@ class LightSensor(BaseSensor):
         return (self._sensor.light,self._sensor.lux)
     
     def __str__(self):
-        return(f"Current light value: {self._sensor.light} \
-            Current lux value: {self._sensor.lux}")
+        light, lux = self.getTelemetry()
+        return f"Current light value: {light} \
+            Current lux value: {lux}"
         
 if __name__ == "__main__":
+    import time
     light = LightSensor()
     while (True):
         print(light)
+        time.sleep(1)
