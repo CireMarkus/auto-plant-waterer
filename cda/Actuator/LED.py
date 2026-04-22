@@ -6,6 +6,7 @@ green = PWMLED(19)
 blue = PWMLED(13)
 
 while(True):
-    red.pulse(15,30,50)
-    green.pulse(20,25,50)
-    blue.pulse(25,20,50)
+    red.pulse(3, 5)    # 8-second total cycle
+    green.pulse(4, 7)  # 11-second total cycle
+    blue.pulse(5, 3)
+    sleep(30)   # 8-second total cycle
