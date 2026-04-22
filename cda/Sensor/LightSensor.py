@@ -2,7 +2,7 @@ import board
 import adafruit_veml7700
 import logging
 
-import BaseSensor
+import cda.Sensor.BaseSensor as BaseSensor
 import common.ConfigConst as ConfigConst
 
 class LightSensor(BaseSensor):
