@@ -69,10 +69,3 @@ class LightSensor(BaseSensor):
         light, lux = self.getTelemetry()
         return f"Current light value: {light} \
             Current lux value: {lux}"
-        
-if __name__ == "__main__":
-    import time
-    light = LightSensor()
-    while (True):
-        print(light)
-        time.sleep(1)
