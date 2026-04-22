@@ -27,6 +27,10 @@ class LightSensor(BaseSensor):
 
     def _autoAdjust(self):
         raw_light = self._sensor.light 
+
+        best_gain_idx = 0
+        best_it_idx = 0
+        min_diff = float('inf')
         if 500 <= raw_light <= 8000:
             return # Already in a stable linear range
         elif raw_light < 1: 
@@ -39,9 +43,7 @@ class LightSensor(BaseSensor):
 
             # 2. Find the best Gain/IT combination to hit that target_sensitivity
             # Start with the lowest gain and increase IT linearly
-            best_gain_idx = 0
-            best_it_idx = 0
-            min_diff = float('inf')
+            
 
             for g_idx, g_val in enumerate(self._GAINARRAY):
                 for it_idx, it_val in enumerate(self._ITARRAY):
