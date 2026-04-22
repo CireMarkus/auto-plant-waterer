@@ -5,6 +5,7 @@ red = PWMLED(26)
 green = PWMLED(19)
 blue = PWMLED(13)
 
-red.pulse(0.5,3)
-green.pulse(1,1.5)
-blue.pulse(1.5,.75)
+while(True):
+    red.pulse(15,30,50)
+    green.pulse(20,25,50)
+    blue.pulse(25,20,50)
