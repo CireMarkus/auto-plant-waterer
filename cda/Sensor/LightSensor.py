@@ -26,29 +26,32 @@ class LightSensor(BaseSensor):
         self._sensor.light_gain = self._GAINARRAY[self._gainIndex]
 
     def _autoAdjust(self):
-        raw_light = self._sensor.light if self._sensor.light > 0 else 1
+        raw_light = self._sensor.light 
         if 500 <= raw_light <= 8000:
             return # Already in a stable linear range
+        elif raw_light < 1: 
+            self._gainIndex = len(self._GAINARRAY) - 1
+            self._itIndex = len(self._ITARRAY) - 1
+        else: 
+            # 1. Calculate what the sensitivity SHOULD be to hit a target of 5000
+            current_sensitivity = self._GAINARRAY[self._gainIndex] * self._ITARRAY[self._itIndex]
+            target_sensitivity = (5000 / raw_light) * current_sensitivity
 
-        # 1. Calculate what the sensitivity SHOULD be to hit a target of 5000
-        current_sensitivity = self._GAINARRAY[self._gainIndex] * self._ITARRAY[self._itIndex]
-        target_sensitivity = (5000 / raw_light) * current_sensitivity
+            # 2. Find the best Gain/IT combination to hit that target_sensitivity
+            # Start with the lowest gain and increase IT linearly
+            best_gain_idx = 0
+            best_it_idx = 0
+            min_diff = float('inf')
 
-        # 2. Find the best Gain/IT combination to hit that target_sensitivity
-        # Start with the lowest gain and increase IT linearly
-        best_gain_idx = 0
-        best_it_idx = 0
-        min_diff = float('inf')
-
-        for g_idx, g_val in enumerate(self._GAINARRAY):
-            for it_idx, it_val in enumerate(self._ITARRAY):
-                test_sensitivity = g_val * it_val
-                diff = abs(test_sensitivity - target_sensitivity)
-                
-                if diff < min_diff:
-                    min_diff = diff
-                    best_gain_idx = g_idx
-                    best_it_idx = it_idx
+            for g_idx, g_val in enumerate(self._GAINARRAY):
+                for it_idx, it_val in enumerate(self._ITARRAY):
+                    test_sensitivity = g_val * it_val
+                    diff = abs(test_sensitivity - target_sensitivity)
+                    
+                    if diff < min_diff:
+                        min_diff = diff
+                        best_gain_idx = g_idx
+                        best_it_idx = it_idx
 
         # 3. Apply the settings
         self._gainIndex = best_gain_idx
