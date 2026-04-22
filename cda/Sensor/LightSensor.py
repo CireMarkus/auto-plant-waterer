@@ -26,7 +26,7 @@ class LightSensor(BaseSensor):
         self._sensor.light_gain = self._GAINARRAY[self._gainIndex]
 
     def _autoAdjust(self):
-        raw_light = self._sensor.light
+        raw_light = self._sensor.light if self._sensor.light > 0 else 1
         if 500 <= raw_light <= 8000:
             return # Already in a stable linear range
 
