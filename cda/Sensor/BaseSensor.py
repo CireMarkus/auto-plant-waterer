@@ -4,7 +4,7 @@ import logging
 
 class BaseSensor:
     
-    def __init_(self, name, typeID, floor = None, ceiling = None) -> None: 
+    def __init__(self, name, typeID, floor = None, ceiling = None) -> None: 
         self.name = name
         self.typeID = typeID
         self.floor = floor
