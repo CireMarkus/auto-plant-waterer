@@ -26,30 +26,36 @@ class LightSensor(BaseSensor):
         self._sensor.light_gain = self.__GAINARRAY[self.__gainIndex]
 
     def _autoAdjust(self):
-        if(self._sensor.light < 100):
-            if(self.__itIndex < len(self.__ITARRAY)-1):
-                self.__itIndex += 1
-                self._sensor.light_integration_time = self.__ITARRAY[self.__itIndex]
-                return
-            elif(self.__gainIndex < len(self.__GAINARRAY)-1):
-                self.__gainIndex += 1
-                self.__itIndex = 0
-                self._sensor.light_integration_time = self.__ITARRAY[self.__itIndex]
-                self._sensor.light_gain = self.__GAINARRAY[self.__gainIndex]
-                return
-        elif (self._sensor.light > 10000):
-            if(self.__itIndex > 0):
-                self.__itIndex -= 1
-                self._sensor.light_integration_time = self.__ITARRAY[self.__itIndex]
-                return
-            elif(self.__gainIndex > 0):
-                self.__gainIndex -= 1
-                self.__itIndex = len(self.__ITARRAY)-1
-                self._sensor.light_integration_time = self.__ITARRAY[self.__itIndex]
-                self._sensor.light_gain = self.__GAINARRAY[self.__gainIndex]
-                return
-        return
-    
+        raw_light = self.__sensor.light
+        if 500 <= raw_light <= 8000:
+            return # Already in a stable linear range
+
+        # 1. Calculate what the sensitivity SHOULD be to hit a target of 5000
+        current_sensitivity = self.__GAINARRAY[self.__gainIndex] * self.__ITARRAY[self.__itIndex]
+        target_sensitivity = (5000 / raw_light) * current_sensitivity
+
+        # 2. Find the best Gain/IT combination to hit that target_sensitivity
+        # Start with the lowest gain and increase IT linearly
+        best_gain_idx = 0
+        best_it_idx = 0
+        min_diff = float('inf')
+
+        for g_idx, g_val in enumerate(self.__GAINARRAY):
+            for it_idx, it_val in enumerate(self.__ITARRAY):
+                test_sensitivity = g_val * it_val
+                diff = abs(test_sensitivity - target_sensitivity)
+                
+                if diff < min_diff:
+                    min_diff = diff
+                    best_gain_idx = g_idx
+                    best_it_idx = it_idx
+
+        # 3. Apply the settings
+        self.__gainIndex = best_gain_idx
+        self.__itIndex = best_it_idx
+        self.__sensor.light_gain = self.__GAINARRAY[self.__gainIndex]
+        self.__sensor.light_integration_time = self.__ITARRAY[self.__itIndex]
+        
     def getTelemetry(self) -> tuple:
         self._autoAdjust()
         return (self._sensor.light,self._sensor.lux)
@@ -57,3 +63,8 @@ class LightSensor(BaseSensor):
     def __str__(self):
         print(f"Current light value: {self._sensor.light} \
             Current lux value: {self._sensor.lux}")
+        
+if __name__ == "__main__":
+    light = LightSensor()
+    while (True):
+        print(light)
