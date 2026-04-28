@@ -26,3 +26,6 @@ class MoistureSensor(BaseSensor):
     #TODO: This function shall log the relative min and compare it to the absolute min. 
     def _calibrate(self):
         pass
+
+    def getTelemetry(self) -> tuple:
+        return (self.channel.value)
