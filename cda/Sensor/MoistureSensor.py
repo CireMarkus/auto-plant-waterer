@@ -27,5 +27,6 @@ class MoistureSensor(BaseSensor):
     def _calibrate(self):
         pass
 
+    #returns the raw ADC pin value [0,65535]
     def getTelemetry(self) -> tuple:
         return (self.channel.value)
