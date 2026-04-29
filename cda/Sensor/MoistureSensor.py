@@ -32,7 +32,7 @@ class MoistureSensor(BaseSensor):
         return (self.channel.value)
     
 
-if __name__ == "__main": 
-    test_sensor = MoistureSensor()
+if __name__ == "__main__": 
+    test_sensor = MoistureSensor("water",12)
 
-    print(f"current value{test_sensor.getTelemetry()[0]}")
+    print(f"current value{test_sensor.getTelemetry()}")
