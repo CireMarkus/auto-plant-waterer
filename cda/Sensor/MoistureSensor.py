@@ -17,7 +17,7 @@ class MoistureSensor(BaseSensor):
             self.spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
             self.cs  = digitalio.DigitalInOut(board.D8)
             self.mcp = MCP.MCP3008(self.spi,self.cs)
-            self.channel = AnalogIn(mcp,MCP.P0)
+            self.channel = AnalogIn(self.mcp,MCP.P0)
             
         except Exception as e: 
             logging.error(f"The following error occurred while initializing {e}")
