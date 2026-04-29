@@ -11,7 +11,7 @@ class LED():
         self.dry = ceiling #the higher value is the dry value
         self.wet = floor #the lower value is the celing. 
 
-    def updateLedCodlor(self,value):
+    def updateLedColor(self,value):
         self.cur_moisture = value
         self.moisture_perc = (self.wet - self.cur_moisture) / (self.wet - self.dry)
 
