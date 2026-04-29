@@ -4,7 +4,7 @@ import time
 
 from cda.Sensor.MoistureSensor import MoistureSensor
 
-class SystemCpuUtilTaskTest(unittest.TestCase):
+class MoistureSensorTest(unittest.TestCase):
     """
     Validate the functionality of the cpu utilization task. 
     """
