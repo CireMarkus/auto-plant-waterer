@@ -15,10 +15,9 @@ class SystemCpuUtilTaskTest(unittest.TestCase):
         logging.info("Testing SystemCpuUtilTask class...")
         self.sensor = MoistureSensor("PM1MS","1")
     
-    def testGetTelemetryValue(self):
-        val = self.sensor.getTelemetry()
-        
+    def testGetTelemetryValue(self):        
         for i in range(0,20):
+            val = self.sensor.getTelemetry()
             logging.info(f"sensor value: {val[0]}")
             time.sleep(1)
         
