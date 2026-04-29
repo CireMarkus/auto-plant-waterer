@@ -18,5 +18,5 @@ class SystemCpuUtilTaskTest(unittest.TestCase):
         val = self.sensor.getTelemetry()
         
         
-        logging.info(f"sensor value: {val}%")
+        logging.info(f"sensor value: {val[0]}")
         
