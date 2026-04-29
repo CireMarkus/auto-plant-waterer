@@ -31,8 +31,3 @@ class MoistureSensor(BaseSensor):
     def getTelemetry(self) -> tuple:
         return (self.channel.value)
     
-
-if __name__ == "__main__": 
-    test_sensor = MoistureSensor("water",12)
-
-    print(f"current value{test_sensor.getTelemetry()}")
