@@ -1,5 +1,6 @@
 import logging
 import unittest
+import time
 
 from cda.Sensor.MoistureSensor import MoistureSensor
 
@@ -17,6 +18,7 @@ class SystemCpuUtilTaskTest(unittest.TestCase):
     def testGetTelemetryValue(self):
         val = self.sensor.getTelemetry()
         
-        
-        logging.info(f"sensor value: {val[0]}")
+        for i in range(0,20):
+            logging.info(f"sensor value: {val[0]}")
+            time.sleep(1)
         
