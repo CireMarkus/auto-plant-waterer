@@ -1,12 +1,22 @@
-from gpiozero import PWMLED 
+from gpiozero import RGBLED 
 from time import sleep
+import colorsys
+import logging 
 
-red = PWMLED(26)
-green = PWMLED(19)
-blue = PWMLED(13)
+class LED():
+    def __init__(self, floor, ceiling):
+        self.led = RGBLED(26,19,13)
+        self.moisture_perc = 0 
+        self.cur_moisture = 0
+        self.dry = ceiling #the higher value is the dry value
+        self.wet = floor #the lower value is the celing. 
 
-while(True):
-    red.pulse(3, 5)    # 8-second total cycle
-    green.pulse(4, 7)  # 11-second total cycle
-    blue.pulse(5, 3)
-    sleep(30)   # 8-second total cycle
+    def updateLedCodlor(self,value):
+        self.cur_moisture = value
+        self.moisture_perc = (self.wet - self.cur_moisture) / (self.wet - self.dry)
+
+        hue = self.moisture_perc * 0.7
+        r,g,b = colorsys.hsv_to_rgb(hue,1,1)
+        self.led.color = (r,g,b)
+        
+        logging.debug(f"Raw: {value} | Perc: {self.moisture_perc:.2%} | RGB: {r:.2f},{g:.2f},{b:.2f}")
