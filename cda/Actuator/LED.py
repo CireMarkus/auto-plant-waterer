@@ -13,7 +13,7 @@ class LED():
 
     def updateLedColor(self,value):
         self.cur_moisture = value
-        self.moisture_perc = (self.wet - self.cur_moisture) / (self.wet - self.dry)
+        self.moisture_perc = (self.dry - self.cur_moisture) / (self.dry - self.wet)
 
         hue = self.moisture_perc * 0.7
         r,g,b = colorsys.hsv_to_rgb(hue,1,1)
