@@ -30,3 +30,9 @@ class MoistureSensor(BaseSensor):
     #returns the raw ADC pin value [0,65535]
     def getTelemetry(self) -> tuple:
         return (self.channel.value)
+    
+
+if __name__ == "__main": 
+    test_sensor = MoistureSensor()
+
+    print(f"current value{test_sensor.getTelemetry()[0]}")
