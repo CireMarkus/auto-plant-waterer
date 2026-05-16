@@ -1,4 +1,4 @@
-import time
+
 import board
 import adafruit_ahtx0
 
