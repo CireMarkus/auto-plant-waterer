@@ -1,8 +1,11 @@
+import colorsys
+import importlib
 import logging
 import unittest
 import time
 
-from cda.Actuator.LED import LED
+import common.ConfigUtil as ConfigUtil
+from cda.Actuator.LED import LED, _DummyRGBLED
 
 class LedTest(unittest.TestCase):
     """
@@ -41,3 +44,20 @@ class LedTest(unittest.TestCase):
         for val in range(52000, 24000, -1000):
             self.led.updateLedColor(val)
             time.sleep(0.1)
+
+    def testDummyLedFallback(self):
+        logging.info("Testing fallback when LED hardware is unavailable...")
+        dummy_led = LED(floor=24000, ceiling=52000, rgb_led_class=_DummyRGBLED)
+        dummy_led.updateLedColor(38000)
+        expected_color = colorsys.hsv_to_rgb(dummy_led.moisture_perc * 0.7, 1, 1)
+        self.assertEqual(dummy_led.led.color, expected_color)
+
+    def testConfigDisablesHardware(self):
+        logging.info("Testing config-based LED hardware disable path...")
+        original_use_hardware = ConfigUtil.use_hardware
+        ConfigUtil.use_hardware = lambda *args, **kwargs: False
+        try:
+            led = LED(floor=24000, ceiling=52000)
+            self.assertIsInstance(led.led, _DummyRGBLED)
+        finally:
+            ConfigUtil.use_hardware = original_use_hardware
