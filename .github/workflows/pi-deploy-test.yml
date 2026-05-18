@@ -15,13 +15,10 @@ on:
         description: 'Run unit tests on the Raspberry Pi'
         required: false
         default: 'true'
-      use_hardware:
-        description: 'Enable real hardware access'
-        required: false
-        default: 'true'
 
 jobs:
   deploy:
+    name: Deploy to Pi
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +30,7 @@ jobs:
         with:
           authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
 
-      - name: Execute deployment commands via SSH
+      - name: Deploy to Raspberry Pi
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.PI_HOST }}
@@ -44,7 +41,6 @@ jobs:
             set -e
             echo "Successfully connected to Pi Zero W over Tailscale!"
             cd /home/${{ secrets.PI_USERNAME }}/source/auto-plant-waterer
-            source .venv/bin/activate
 
             BRANCH=""
             if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
@@ -64,14 +60,74 @@ jobs:
             git fetch origin
             git checkout -B "$BRANCH" "origin/$BRANCH"
 
-            if [ "${{ github.event.inputs.use_hardware || 'true' }}" = "true" ]; then
-              export AUTO_PLANT_USE_HARDWARE=1
-            else
-              export AUTO_PLANT_USE_HARDWARE=0
-            fi
-
-            if [ "${{ github.event.inputs.run_tests || 'true' }}" = "true" ]; then
-              PYTHONUNBUFFERED=1 python -m pytest -vv -s --log-cli-level=DEBUG -o log_cli=true tests/unit
-            fi
-
+            echo "Pi deployment branch is ready."
             echo "Pi deployment complete."
+
+  test:
+    name: Run Pi unit tests
+    needs: deploy
+    if: ${{ github.event.inputs.run_tests != 'false' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
+
+      - name: Execute tests on Raspberry Pi
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.PI_HOST }}
+          username: ${{ secrets.PI_USERNAME }}
+          key: ${{ secrets.PI_SSH_KEY }}
+          port: 22
+          script: |
+            set -e
+            cd /home/${{ secrets.PI_USERNAME }}/source/auto-plant-waterer
+
+            BRANCH=""
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              BRANCH="${{ github.event.inputs.branch }}"
+            elif [ "${{ github.event_name }}" = "pull_request" ]; then
+              BRANCH="${{ github.head_ref }}"
+            else
+              BRANCH="${{ github.ref_name }}"
+            fi
+
+            if [ -z "$BRANCH" ]; then
+              echo "No branch specified; using main"
+              BRANCH="main"
+            fi
+
+            echo "Checking out branch: $BRANCH"
+            git fetch origin
+            git checkout -B "$BRANCH" "origin/$BRANCH"
+
+            if [ -d ".venv" ]; then
+              echo "Activating Python virtual environment"
+              . .venv/bin/activate
+            else
+              echo ".venv not found; using system Python"
+            fi
+
+            PYTHONUNBUFFERED=1 python -m pytest -vv -s --log-cli-level=DEBUG -o log_cli=true -o log_file=pytest.log -o log_file_level=DEBUG --junitxml=pytest-report.xml tests/unit
+
+            echo "Pi tests complete."
+
+      - name: Copy pytest artifacts from Raspberry Pi
+        run: |
+          mkdir -p test-results
+          printf '%s' "${{ secrets.PI_SSH_KEY }}" > ~/pi_ssh_key
+          chmod 600 ~/pi_ssh_key
+          scp -o StrictHostKeyChecking=no -i ~/pi_ssh_key -P 22 "${{ secrets.PI_USERNAME }}@${{ secrets.PI_HOST }}:/home/${{ secrets.PI_USERNAME }}/source/auto-plant-waterer/pytest-report.xml" test-results/
+          scp -o StrictHostKeyChecking=no -i ~/pi_ssh_key -P 22 "${{ secrets.PI_USERNAME }}@${{ secrets.PI_HOST }}:/home/${{ secrets.PI_USERNAME }}/source/auto-plant-waterer/pytest.log" test-results/ || true
+
+      - name: Upload pytest artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: pi-pytest-results
+          path: test-results/
