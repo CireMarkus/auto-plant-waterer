@@ -117,17 +117,3 @@ jobs:
             PYTHONUNBUFFERED=1 python -m pytest -vv -s --log-cli-level=DEBUG -o log_cli=true -o log_file=pytest.log -o log_file_level=DEBUG --junitxml=pytest-report.xml tests/unit
 
             echo "Pi tests complete."
-
-      - name: Copy pytest artifacts from Raspberry Pi
-        run: |
-          mkdir -p test-results
-          printf '%s' "${{ secrets.PI_SSH_KEY }}" > ~/pi_ssh_key
-          chmod 600 ~/pi_ssh_key
-          scp -o StrictHostKeyChecking=no -i ~/pi_ssh_key -P 22 "${{ secrets.PI_USERNAME }}@${{ secrets.PI_HOST }}:/home/${{ secrets.PI_USERNAME }}/source/auto-plant-waterer/pytest-report.xml" test-results/
-          scp -o StrictHostKeyChecking=no -i ~/pi_ssh_key -P 22 "${{ secrets.PI_USERNAME }}@${{ secrets.PI_HOST }}:/home/${{ secrets.PI_USERNAME }}/source/auto-plant-waterer/pytest.log" test-results/ || true
-
-      - name: Upload pytest artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: pi-pytest-results
-          path: test-results/
