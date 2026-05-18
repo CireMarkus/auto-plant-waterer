@@ -1,0 +1,76 @@
+name: Pi Zero W Deploy and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy/test on the Pi'
+        required: false
+        default: ''
+      run_tests:
+        description: 'Run unit tests on the Raspberry Pi'
+        required: false
+        default: 'true'
+      use_hardware:
+        description: 'Enable real hardware access'
+        required: false
+        default: 'true'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
+
+      - name: Execute deployment commands via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.PI_HOST }}
+          username: ${{ secrets.PI_USERNAME }}
+          key: ${{ secrets.PI_SSH_KEY }}
+          port: 22
+          script: |
+            set -e
+            echo "Successfully connected to Pi Zero W over Tailscale!"
+            cd /home/${{ secrets.PI_USERNAME }}/source/auto-plant-waterer
+
+            BRANCH=""
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              BRANCH="${{ github.event.inputs.branch }}"
+            elif [ "${{ github.event_name }}" = "pull_request" ]; then
+              BRANCH="${{ github.head_ref }}"
+            else
+              BRANCH="${{ github.ref_name }}"
+            fi
+
+            if [ -z "$BRANCH" ]; then
+              echo "No branch specified; using main"
+              BRANCH="main"
+            fi
+
+            echo "Checking out branch: $BRANCH"
+            git fetch origin
+            git checkout -B "$BRANCH" "origin/$BRANCH"
+
+            if [ "${{ github.event.inputs.use_hardware || 'true' }}" = "true" ]; then
+              export AUTO_PLANT_USE_HARDWARE=1
+            else
+              export AUTO_PLANT_USE_HARDWARE=0
+            fi
+
+            if [ "${{ github.event.inputs.run_tests || 'true' }}" = "true" ]; then
+              python3 -m pytest tests/unit
+            fi
+
+            echo "Pi deployment complete."
