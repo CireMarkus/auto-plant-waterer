@@ -1,0 +1,39 @@
+name: Deploy to Pi Zero W
+
+on:
+  push:
+    branches: [ main ] # Triggers every time you push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Pull the code from your repository into the cloud runner
+    - name: Checkout repository code
+      uses: actions/checkout@v4
+
+    # 2. Temporarily connect the cloud runner to your Tailscale network
+    - name: Connect to Tailscale
+      uses: tailscale/github-action@v3
+      with:
+        authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
+
+    # 3. Connect to the Pi via SSH over Tailscale and run commands
+    - name: Execute deployment commands via SSH
+      uses: appleboy/ssh-action@v1.2.0
+      with:
+        host: ${{ secrets.PI_HOST }}
+        username: ${{ secrets.PI_USERNAME }}
+        key: ${{ secrets.PI_SSH_KEY }}
+        port: 22
+        script: |
+          echo "Successfully connected to Pi Zero W over Tailscale!"
+          
+          # Target your project folder on the Pi
+          cd /home/${{ secrets.PI_USERNAME }}/source/auto-plant-waterer
+          
+          # Pull the latest changes from GitHub directly onto the Pi
+          git pull origin main
+          
+          # ---> ADD YOUR RESTART/BUILD COMMANDS HERE <---
