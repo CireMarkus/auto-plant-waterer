@@ -99,7 +99,7 @@ jobs:
             fi
 
             if [ -z "$BRANCH" ]; then
-              echo "No branch specified; using main"
+              echo "No branch specified; using main"@v3
               BRANCH="main"
             fi
 
@@ -127,7 +127,7 @@ jobs:
           scp -o StrictHostKeyChecking=no -i ~/pi_ssh_key -P 22 "${{ secrets.PI_USERNAME }}@${{ secrets.PI_HOST }}:/home/${{ secrets.PI_USERNAME }}/source/auto-plant-waterer/pytest.log" test-results/ || true
 
       - name: Upload pytest artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pi-pytest-results
           path: test-results/
