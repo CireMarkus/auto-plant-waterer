@@ -47,3 +47,20 @@ An automated plant care system built with Python and basic electronics. The Auto
 ```bash
 git clone https://github.com/CireMarkus/auto-plant-waterer.git
 cd auto-plant-waterer
+```
+
+### Configuration & Test Mode
+
+- The project reads runtime configuration from `common/config.json`. Set the top-level
+   `use_hardware` boolean to `true` to enable real hardware access, or `false` to force
+   simulated sensors (useful for local development and CI).
+- You can also temporarily override that behavior with an environment variable:
+
+```bash
+# force hardware on
+export AUTO_PLANT_USE_HARDWARE=1
+# force simulation
+export AUTO_PLANT_USE_HARDWARE=0
+```
+
+The code checks `AUTO_PLANT_USE_HARDWARE` first, then falls back to `common/config.json`.

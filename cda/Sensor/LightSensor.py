@@ -1,30 +1,45 @@
-import board
-import adafruit_veml7700
 import logging
 
 from cda.Sensor.BaseSensor import BaseSensor
+from cda.Sensor.SimulatedLightSensor import SimulatedLightSensor
 import common.ConfigConst as ConfigConst
+import common.ConfigUtil as ConfigUtil
+
+# Try optional hardware import; fall back to simulated sensor for CI/local environments
+_LIBS_AVAILABLE = True
+try:
+    import board # pyright: ignore[reportMissingImports]
+    import adafruit_veml7700 # pyright: ignore[reportMissingImports]
+except Exception:
+    _LIBS_AVAILABLE = False
+
 
 class LightSensor(BaseSensor):
     
     def __init__(self):
-        super().__init__(\
-            name = ConfigConst.LIGHT_SENSOR_NAME,\
-            typeID = ConfigConst.LIGHT_SENSOR_TYPE,\
-            floor = ConfigConst.LIGHT_SENSOR_FLOOR,\
+        super().__init__(
+            name = ConfigConst.LIGHT_SENSOR_NAME,
+            typeID = ConfigConst.LIGHT_SENSOR_TYPE,
+            floor = ConfigConst.LIGHT_SENSOR_FLOOR,
             ceiling = ConfigConst.LIGHT_SENSOR_CEILING)
         
-        try: 
-            self._sensor = adafruit_veml7700.VEML7700(board.I2C())
-        except Exception as e:
-            logging.error(f"The following error has occured during initialization: {e}")
+        use_hw_cfg = ConfigUtil.use_hardware()
+        if _LIBS_AVAILABLE and use_hw_cfg:
+            try:
+                self._sensor = adafruit_veml7700.VEML7700(board.I2C())
+            except Exception as e:
+                logging.error(f"The following error has occured during initialization: {e}.")
+                exit()
+        else:
+            logging.info("Using simulated light sensor (config or missing libs)")
+            self._sensor = SimulatedLightSensor()
+
         self._ITARRAY =[self._sensor.ALS_25MS,self._sensor.ALS_50MS,self._sensor.ALS_100MS,self._sensor.ALS_200MS,self._sensor.ALS_400MS,self._sensor.ALS_800MS]
         self._GAINARRAY = [self._sensor.ALS_GAIN_1_8,self._sensor.ALS_GAIN_1_4,self._sensor.ALS_GAIN_1,self._sensor.ALS_GAIN_2]
         self._gainIndex = 0
         self._itIndex = 0
         self._sensor.light_integration_time = self._ITARRAY[self._itIndex]
         self._sensor.light_gain = self._GAINARRAY[self._gainIndex]
-
     def _autoAdjust(self):
         raw_light = self._sensor.light 
 

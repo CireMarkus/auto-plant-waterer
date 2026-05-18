@@ -1,0 +1,17 @@
+APScheduler==3.11.2
+binho-host-adapter==0.1.6
+coverage==7.13.5
+iniconfig==2.3.0
+packaging==26.1
+pluggy==1.6.0
+psutil==7.2.2
+pyftdi==0.57.1
+Pygments==2.20.0
+pyserial==3.5
+pytest==9.0.3
+pytest-cov==7.1.0
+pyusb==1.3.1
+setuptools==82.0.1
+sysv_ipc==1.2.0
+typing_extensions==4.15.0
+tzlocal==5.3.1
