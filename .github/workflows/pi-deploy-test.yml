@@ -44,6 +44,7 @@ jobs:
             set -e
             echo "Successfully connected to Pi Zero W over Tailscale!"
             cd /home/${{ secrets.PI_USERNAME }}/source/auto-plant-waterer
+            source .venv/bin/activate
 
             BRANCH=""
             if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
@@ -70,7 +71,7 @@ jobs:
             fi
 
             if [ "${{ github.event.inputs.run_tests || 'true' }}" = "true" ]; then
-              python3 -m pytest tests/unit
+              PYTHONUNBUFFERED=1 python -m pytest -vv -s --log-cli-level=DEBUG -o log_cli=true tests/unit
             fi
 
             echo "Pi deployment complete."
