@@ -63,21 +63,6 @@ jobs:
             echo "Pi deployment branch is ready."
             echo "Pi deployment complete."
 
-  test:
-    name: Run Pi unit tests
-    needs: deploy
-    if: ${{ github.event.inputs.run_tests != 'false' }}
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository code
-        uses: actions/checkout@v4
-
-      - name: Connect to Tailscale
-        uses: tailscale/github-action@v3
-        with:
-          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
-
       - name: Execute tests on Raspberry Pi
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -117,3 +102,5 @@ jobs:
             PYTHONUNBUFFERED=1 python -m pytest -vv -s --log-cli-level=DEBUG -o log_cli=true -o tests/unit
 
             echo "Pi tests complete."
+
+    
