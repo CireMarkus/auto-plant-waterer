@@ -5,7 +5,7 @@ from cda.Sensor.SimulatedLightSensor import SimulatedLightSensor
 import common.ConfigConst as ConfigConst
 import common.ConfigUtil as ConfigUtil
 
-# Try optional hardware import; fall back to simulated sensor for CI/local environments
+
 _LIBS_AVAILABLE = True
 try:
     import board # pyright: ignore[reportMissingImports]
