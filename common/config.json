@@ -12,7 +12,7 @@
             "poll_rate_seconds": 300
         },
         {
-            "id": "temphum_sensor",
+            "id": "temp_humidity_sensor",
             "poll_rate_seconds": 900
         }
     ]
