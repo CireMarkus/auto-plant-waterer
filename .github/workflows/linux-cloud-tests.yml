@@ -1,0 +1,32 @@
+name: Linux Cloud Unit Tests
+
+on:
+  push:
+    branches: [ main, development ]
+  pull_request:
+    branches: [ main, development ]
+
+jobs:
+  linux-unit-tests:
+    name: Run Unit Tests on Linux
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest
+          if [ -f requirements_linux.txt ]; then pip install -r requirements_linux.txt; fi
+
+      - name: Run Pytest
+        run: |
+          PYTHONUNBUFFERED=1 python -m pytest -vv -s --log-cli-level=DEBUG -o log_cli=true tests
