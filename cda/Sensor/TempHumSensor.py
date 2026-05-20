@@ -1,6 +1,7 @@
 import logging
 
 from cda.Sensor.BaseSensor import BaseSensor
+from cda.Sensor.SimulatedTempHumSensor import SimulatedTempHumSensor
 
 import common.ConfigConst as ConfigConst
 import common.ConfigUtil as ConfigUtil
@@ -14,12 +15,12 @@ except:
 
 
 class TempHumSensor(BaseSensor):
-    def __init__(self):
+    def __init__(self, name, typeID, floor=None, ceiling=None):
         super().__init__(
-            name = ConfigUtil.TEMPHUM_SENSOR_NAME,
-            typeID = ConfigConst.TEMPHUM_SENSOR_TYPE,
-            floor = ConfigConst.TEMPHUM_SENSOR_FLOOR,
-            ceiling = ConfigConst.TEMPHUM_SENSOR_CEILING)
+            name = name,
+            typeID = typeID,
+            floor = floor,
+            ceiling = ceiling)
 
         use_hw_cfg = ConfigUtil.use_hardware()
         if _LIBS_AVAILABLE and use_hw_cfg: 
@@ -30,7 +31,7 @@ class TempHumSensor(BaseSensor):
                 exit()
         else:
             logging.info("Using simulated moisture sensor (config or missing libs)")
-            #self._sensor = SimulatedTempHumSensor()
+            self._sensor = SimulatedTempHumSensor()
     
     def getTemp(self):
         #Temp is returned in Celcius
