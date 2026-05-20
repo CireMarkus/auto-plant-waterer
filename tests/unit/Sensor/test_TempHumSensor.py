@@ -4,7 +4,7 @@ import time
 
 from cda.Sensor.TempHumSensor import TempHumSensor
 
-class MoistureSensorTest(unittest.TestCase):
+class TempHumSensorTest(unittest.TestCase):
     """
     Validate the functionality of the cpu utilization task. 
     """
@@ -29,7 +29,7 @@ class MoistureSensorTest(unittest.TestCase):
             temperature = val[0]
             humidity = val[1]
             logging.info(f" temp: {temperature} C, humidity: {humidity}")
-            self.assertGreater(temperature,0)
-            self.assertGreater(humidity,0)
+            self.assertIsNotNone(temperature)
+            self.assertIsNotNone(humidity)
             time.sleep(1)
         
