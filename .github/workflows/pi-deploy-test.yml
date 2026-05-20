@@ -99,7 +99,7 @@ jobs:
               echo ".venv not found; using system Python"
             fi
 
-            PYTHONUNBUFFERED=1 python -m pytest -vv -s --log-cli-level=DEBUG -o log_cli=true -o tests/unit
+            PYTHONUNBUFFERED=1 python -m pytest -vv -s --log-cli-level=DEBUG -o log_cli=true tests
 
             echo "Pi tests complete."
 
