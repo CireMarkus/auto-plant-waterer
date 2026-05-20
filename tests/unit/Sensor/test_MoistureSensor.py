@@ -20,4 +20,4 @@ class MoistureSensorTest(unittest.TestCase):
             val = self.sensor.getTelemetry()
             logging.info(f"sensor value: {val[0]}")
             time.sleep(1)
-        
+        self.assertGreater(val[0],0)

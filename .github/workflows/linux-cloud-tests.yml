@@ -1,0 +1,38 @@
+name: Linux Cloud Unit Tests
+
+on:
+  push:
+    branches: [ main, development ]
+  pull_request:
+    branches: [ main, development ]
+
+jobs:
+  linux-unit-tests:
+    name: Run Unit Tests on Linux
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest
+          
+          # Install your Linux-specific requirements from the root directory
+          if [ -f requirements_linux.txt ]; then
+            echo "Found requirements_linux.txt, installing dependencies..."
+            pip install -r requirements_linux.txt
+          else
+            echo "requirements_linux.txt not found in root, skipping bulk installation."
+          fi
+
+      - name: Run Pytest
+        run: |
+          PYTHONUNBUFFERED=1 python -m pytest -vv -s --log-cli-level=DEBUG -o log_cli=true tests
