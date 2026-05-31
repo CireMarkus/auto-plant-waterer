@@ -2,9 +2,9 @@ name: Pi Zero W Deploy and Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, development ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, development ]
   workflow_dispatch:
     inputs:
       branch:
@@ -63,22 +63,8 @@ jobs:
             echo "Pi deployment branch is ready."
             echo "Pi deployment complete."
 
-  test:
-    name: Run Pi unit tests
-    needs: deploy
-    if: ${{ github.event.inputs.run_tests != 'false' }}
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository code
-        uses: actions/checkout@v4
-
-      - name: Connect to Tailscale
-        uses: tailscale/github-action@v3
-        with:
-          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
-
       - name: Execute tests on Raspberry Pi
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.run_tests == 'true' }}
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.PI_HOST }}
@@ -99,7 +85,7 @@ jobs:
             fi
 
             if [ -z "$BRANCH" ]; then
-              echo "No branch specified; using main"@v3
+              echo "No branch specified; using main"
               BRANCH="main"
             fi
 
@@ -107,13 +93,21 @@ jobs:
             git fetch origin
             git checkout -B "$BRANCH" "origin/$BRANCH"
 
+            # Enable hardware flag for Pi-specific testing
+            echo "Enabling use_hardware flag in config.json..."
+            sed -i 's/"use_hardware":\s*false/"use_hardware": true/' common/config.json
+
             if [ -d ".venv" ]; then
               echo "Activating Python virtual environment"
               . .venv/bin/activate
+              pip install -r requirements_pi.txt
             else
               echo ".venv not found; using system Python"
             fi
 
-            PYTHONUNBUFFERED=1 python -m pytest -vv -s --log-cli-level=DEBUG tests/unit
+            # Revert the hardware flag back to false on exit, even if pytest crashes
+            trap 'echo "Reverting config.json changes..."; git checkout common/config.json' EXIT
+
+            PYTHONUNBUFFERED=1 python -m pytest -vv -s --log-cli-level=DEBUG -o log_cli=true tests
 
             echo "Pi tests complete."

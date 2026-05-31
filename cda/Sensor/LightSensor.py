@@ -2,10 +2,9 @@ import logging
 
 from cda.Sensor.BaseSensor import BaseSensor
 from cda.Sensor.SimulatedLightSensor import SimulatedLightSensor
-import common.ConfigConst as ConfigConst
 import common.ConfigUtil as ConfigUtil
 
-# Try optional hardware import; fall back to simulated sensor for CI/local environments
+
 _LIBS_AVAILABLE = True
 try:
     import board # pyright: ignore[reportMissingImports]
@@ -16,12 +15,12 @@ except Exception:
 
 class LightSensor(BaseSensor):
     
-    def __init__(self):
+    def __init__(self,name, typeID, floor=None, ceiling=None):
         super().__init__(
-            name = ConfigConst.LIGHT_SENSOR_NAME,
-            typeID = ConfigConst.LIGHT_SENSOR_TYPE,
-            floor = ConfigConst.LIGHT_SENSOR_FLOOR,
-            ceiling = ConfigConst.LIGHT_SENSOR_CEILING)
+            name = name,
+            typeID = typeID,
+            floor = floor,
+            ceiling = ceiling)
         
         use_hw_cfg = ConfigUtil.use_hardware()
         if _LIBS_AVAILABLE and use_hw_cfg:
