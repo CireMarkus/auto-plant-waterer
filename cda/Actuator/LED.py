@@ -1,21 +1,17 @@
 import colorsys
 import logging
+from cda.Actuator.DummyRGBLED import DummyRBGLED
 
 import common.ConfigUtil as ConfigUtil
 
 try:
-    from gpiozero import RGBLED
+    from gpiozero import RGBLED # type: ignore
     _HARDWARE_AVAILABLE = True
 except Exception:
     RGBLED = None
     _HARDWARE_AVAILABLE = False
 
-class _DummyRGBLED:
-    def __init__(self, *args, **kwargs):
-        self.color = (0.0, 0.0, 0.0)
 
-    def close(self):
-        pass
 
 class LED():
     def __init__(self, floor, ceiling, rgb_led_class=None):
@@ -26,13 +22,13 @@ class LED():
 
         if rgb_led_class is None:
             use_hw = ConfigUtil.use_hardware()
-            rgb_led_class = RGBLED if use_hw and _HARDWARE_AVAILABLE else _DummyRGBLED
+            rgb_led_class = RGBLED if use_hw and _HARDWARE_AVAILABLE else DummyRBGLED 
 
         try:
             self.led = rgb_led_class(26, 19, 13)
         except Exception as e:
             logging.warning(f"LED hardware unavailable: {e}. Using dummy LED.")
-            self.led = _DummyRGBLED()
+            self.led = DummyRBGLED()
 
     def updateLedColor(self,value):
         self.cur_moisture = value
