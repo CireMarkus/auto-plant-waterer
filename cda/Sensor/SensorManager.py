@@ -1,6 +1,7 @@
 import logging
 import threading
 from apscheduler.schedulers.background import BackgroundScheduler
+import datetime
 
 #custom libraries
 import common.ConfigConst as ConfigConst
@@ -23,13 +24,15 @@ class SensorManager(object):
         #Sensor section
         self.m_sensor = MoistureSensor()
         self.l_sensor = LightSensor()
-        self.th_sensor = TempHumiditySensor()
+        self.th_sensor = TempHumSensor()
 
-        #Sensor State Cache
+        # Sensor State Cache
+        # this will hold the measurement 
+        # and a timestamp of when that measurement that was taken. 
         self.data_cache = {
-            self.m_sensor.getName():  {},
-            self.l_sensor.getName():  {},
-            self.th_sensor.getName(): {}
+            self.m_sensor.getName():  tuple(),
+            self.l_sensor.getName():  tuple(),
+            self.th_sensor.getName(): tuple()
         }
 
 
@@ -48,11 +51,11 @@ class SensorManager(object):
                                 id=f"job_{self.l_sensor.getName()}",
                                 max_instances=1)
         
-        """self.scheduler.add_job(lambda th=self.th_sensor: self.execute_read(th),
-                                    'interval', 
-                                    seconds=ConfigUtil.get_poll_rate("temp_humidity_sensor"),
-                                    id=f"job_{self.th_sensor.getName()}",
-                                    max_instances=1)"""
+        self.scheduler.add_job(lambda th=self.th_sensor: self.execute_read(th),
+                                'interval', 
+                                seconds=ConfigUtil.get_poll_rate("temp_humidity_sensor"),
+                                id=f"job_{self.th_sensor.getName()}",
+                                max_instances=1)
         
         #NOTE: add subsequent sensors here.
         try:
@@ -71,17 +74,19 @@ class SensorManager(object):
     def execute_read(self,sensor):
         """Background thread worker that updates 
             the central cache of sensor data."""
-
+        time = datetime.datetime.now()
         with self.hardware_bus_lock: 
             try: 
                 sensor_data = sensor.getTelemetry()[0]
             except Exception as e: 
                 logging.error(f"Hardware error on {sensor.getName()}: {e}")
                 return 
-            
+
         with self.cache_lock:
-            self.data_cache[sensor.getName()] = sensor_data
-    
+            
+            logging.debug(f"Data taken: {sensor_data}, timestamp: {time}")
+            self.data_cache[sensor.getName()] = (sensor_data,time)
+
     def get_telemetry(self) -> dict:
         """
         Any other managers can call this at 
