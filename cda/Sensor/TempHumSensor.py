@@ -30,15 +30,15 @@ class TempHumSensor(BaseSensor):
                 logging.error(f"The following error has occured during initialization: {e}.")
                 exit()
         else:
-            logging.info("Using simulated moisture sensor (config or missing libs)")
+            logging.info("Using simulated temperature/humidity sensor (config or missing libs)")
             self._sensor = SimulatedTempHumSensor()
-    
+
     def getTemp(self):
-        #Temp is returned in Celcius
+        # Temp is returned in Celsius
         return self._sensor.temperature
-    
+
     def getHumidity(self):
         return self._sensor.relative_humidity
-    
+
     def getTelemetry(self) -> tuple:
-        return (self.getTemp(),self.getHumidity())
+        return (self.getTemp(), self.getHumidity())
