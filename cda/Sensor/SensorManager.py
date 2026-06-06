@@ -4,8 +4,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import datetime
 
 #custom libraries
-import common.ConfigConst as ConfigConst
-from common.ConfigUtil import ConfigUtil
+import common.ConfigConst as ConfigConst #NOTE: review and see if this need to stay
+import  common.ConfigUtil as ConfigUtil
 
 from cda.Sensor.LightSensor import LightSensor
 from cda.Sensor.MoistureSensor import MoistureSensor
@@ -22,16 +22,16 @@ class SensorManager(object):
         self.cache_lock = threading.Lock()
 
         #Sensor section
-        self.m_sensor = MoistureSensor()
-        self.l_sensor = LightSensor()
-        self.th_sensor = TempHumSensor()
+        self.m_sensor = MoistureSensor("moisture_sensor",1)
+        self.l_sensor = LightSensor("light_sensor",1)
+        self.th_sensor = TempHumSensor("temp_humidity_sensor",1)
 
         # Sensor State Cache
         # this will hold the measurement 
-        # and a timestamp of when that measurement that was taken. 
+        # and a timestamp of when that measurement that was taken.
         self.data_cache = {
-            self.m_sensor.getName():  tuple(),
-            self.l_sensor.getName():  tuple(),
+            self.m_sensor.getName(): tuple(),
+            self.l_sensor.getName(): tuple(),
             self.th_sensor.getName(): tuple()
         }
 
@@ -41,19 +41,19 @@ class SensorManager(object):
 
         self.scheduler.add_job(lambda m=self.m_sensor: self.execute_read(m),
                                 'interval', 
-                                seconds=ConfigUtil.get_poll_rate("moisture_sensor"),
+                                seconds=ConfigUtil.get_poll_rate(self.m_sensor.getName()),
                                 id=f"job_{self.m_sensor.getName()}",
                                 max_instances=1)
         
         self.scheduler.add_job(lambda l=self.l_sensor: self.execute_read(l),
                                 'interval', 
-                                seconds=ConfigUtil.get_poll_rate("light_sensor"),
+                                seconds=ConfigUtil.get_poll_rate(self.l_sensor.getName()),
                                 id=f"job_{self.l_sensor.getName()}",
                                 max_instances=1)
         
         self.scheduler.add_job(lambda th=self.th_sensor: self.execute_read(th),
                                 'interval', 
-                                seconds=ConfigUtil.get_poll_rate("temp_humidity_sensor"),
+                                seconds=ConfigUtil.get_poll_rate(self.th_sensor.getName()),
                                 id=f"job_{self.th_sensor.getName()}",
                                 max_instances=1)
         
@@ -75,17 +75,16 @@ class SensorManager(object):
         """Background thread worker that updates 
             the central cache of sensor data."""
         time = datetime.datetime.now()
-        with self.hardware_bus_lock: 
-            try: 
-                sensor_data = sensor.getTelemetry()[0]
-            except Exception as e: 
+        with self.hardware_bus_lock:
+            try:
+                sensor_data = sensor.getTelemetry()
+            except Exception as e:
                 logging.error(f"Hardware error on {sensor.getName()}: {e}")
-                return 
+                return
 
         with self.cache_lock:
-            
             logging.debug(f"Data taken: {sensor_data}, timestamp: {time}")
-            self.data_cache[sensor.getName()] = (sensor_data,time)
+            self.data_cache[sensor.getName()] = (sensor_data, time)
 
     def get_telemetry(self) -> dict:
         """
