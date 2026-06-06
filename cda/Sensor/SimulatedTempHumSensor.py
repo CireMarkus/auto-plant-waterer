@@ -2,31 +2,38 @@ import logging
 from common.SampleProvider import SampleProvider
 
 
-
 class SimulatedTempHumSensor:
-    
-    def __init__(self):
-        try: 
-            self.provider = SampleProvider("temphum_sensor")
-            self.last_temp = 0.0 
-            self.last_hum = 0.0 
-        except Exception as e: 
-            logging.error(f"Unable to initalize sample provider. {e}")
 
-    def next_sample(self):
+    def __init__(self):
+        try:
+            self.provider = SampleProvider("temphum_sensor")
+            self.last_temp = None
+            self.last_hum = None
+        except Exception as e:
+            logging.error(f"Unable to initialize sample provider. {e}")
+            self.provider = None
+            self.last_temp = None
+            self.last_hum = None
+
+    def _read_sample(self):
+        if self.provider is None:
+            raise RuntimeError("SimulatedTempHumSensor has no sample provider")
+
         val = self.provider.next()
-        
-        if isinstance(val,tuple) or isisntance(val,list): 
+        if isinstance(val, (tuple, list)):
             self.last_temp = float(val[0])
             self.last_hum = float(val[1])
-    
-    
+        else:
+            raise ValueError(f"Expected tuple sample for temp/humidity sensor, got: {val}")
+
     @property
     def temperature(self):
-        self.next_sample()
+        if self.last_temp is None or self.last_hum is None:
+            self._read_sample()
         return self.last_temp
-    
+
     @property
     def relative_humidity(self):
-        self.next_sample()
+        if self.last_temp is None or self.last_hum is None:
+            self._read_sample()
         return self.last_hum

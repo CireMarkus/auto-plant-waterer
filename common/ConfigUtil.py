@@ -34,17 +34,20 @@ def use_hardware(sensor_id: Optional[str] = None) -> bool:
 	- Top-level `use_hardware` bool
 	- Defaults to False when config unreadable
 	"""
-	# Environment variable override (useful for CI):
-	# - AUTO_PLANT_USE_HARDWARE=1|true|yes enables hardware
-	# - AUTO_PLANT_USE_HARDWARE=0|false|no disables hardware
-	env = os.environ.get('AUTO_PLANT_USE_HARDWARE')
-	if env is not None:
-		if env.lower() in ('1', 'true', 'yes'):
-			return True
-		if env.lower() in ('0', 'false', 'no'):
-			return False
-
 	cfg = _load_config()
 	# Use only the global flag. Per-sensor flags were removed to keep
 	# configuration simple and consistent across environments.
 	return bool(cfg.get('use_hardware', False))
+
+def get_poll_rate(sensor_name: str) -> Optional[int]:
+	"""Return the poll rate in seconds for a given sensor name.
+	
+	Looks up the sensor by id in the sensors list and returns its poll_rate_seconds.
+	Returns None if sensor not found or poll_rate_seconds is not defined.
+	"""
+	cfg = _load_config()
+	sensors = cfg.get('sensors', [])
+	for sensor in sensors:
+		if sensor.get('id') == sensor_name:
+			return int(sensor.get('poll_rate_seconds'))
+	return int(5)
