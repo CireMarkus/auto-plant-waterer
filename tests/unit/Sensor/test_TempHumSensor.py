@@ -26,6 +26,8 @@ class TempHumSensorTest(unittest.TestCase):
     def testGetTelemetryValue(self):        
         for i in range(0,20):
             val = self.sensor.getTelemetry()
+            self.assertIsInstance(val, tuple)
+            self.assertEqual(len(val), 2)
             temperature = val[0]
             humidity = val[1]
             logging.info(f" temp: {temperature} C, humidity: {humidity}")
