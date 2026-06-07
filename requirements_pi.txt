@@ -8,6 +8,8 @@ adafruit-circuitpython-register==1.11.2
 adafruit-circuitpython-requests==4.1.16
 adafruit-circuitpython-typing==1.12.3
 adafruit-circuitpython-veml7700==2.2.1
+adafruit-circuitpython-ahtx0==1.0.30
+APScheduler==3.11.2
 Adafruit-GPIO==1.0.3
 Adafruit-MCP3008==1.0.2
 Adafruit-PlatformDetect==3.88.0

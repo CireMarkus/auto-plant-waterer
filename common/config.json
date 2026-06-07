@@ -4,10 +4,16 @@
         {
             "id": "moisture_sensor",
             "min_val": 0,
-            "max_val": 65535
+            "max_val": 65535, 
+            "poll_rate_seconds": 5
         },
         {
-            "id": "light_sensor"
+            "id": "light_sensor",
+            "poll_rate_seconds": 300
+        },
+        {
+            "id": "temp_humidity_sensor",
+            "poll_rate_seconds": 900
         }
     ]
 }
