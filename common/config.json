@@ -15,5 +15,13 @@
             "id": "temp_humidity_sensor",
             "poll_rate_seconds": 900
         }
+    ],
+    "actuator":[
+        {
+            "id": "LED",
+            "red_pin": 26,
+            "green_pin": 19,
+            "blue_pin": 13
+        }
     ]
 }
