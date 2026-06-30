@@ -62,7 +62,7 @@ def sensor_parser(sensor_name:str,info:str):
 
 def actuator_parser(actuator_name:str, info:str):
 	cfg = _load_config()
-	actuators = cfg.get('actuator'[])
+	actuators = cfg.get('actuator',[])
 	for actuator in actuators: 
 		if actuator.get('id') == actuator_name: 
 			return actuator.get(info)
