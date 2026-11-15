@@ -48,7 +48,7 @@ class LedTest(unittest.TestCase):
 
     def testDummyLedFallback(self):
         logging.info("Testing fallback when LED hardware is unavailable...")
-        dummy_led = LED(floor=24000, ceiling=52000, rgb_led_class=DummyRBGLED())
+        dummy_led = LED(floor=24000, ceiling=52000, rgb_led_class=DummyRBGLED)
         dummy_led.updateLedColor(38000)
         expected_color = colorsys.hsv_to_rgb(dummy_led.moisture_perc * 0.7, 1, 1)
         self.assertEqual(dummy_led.led.color, expected_color)
