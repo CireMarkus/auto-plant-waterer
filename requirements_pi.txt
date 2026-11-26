@@ -28,3 +28,6 @@ setuptools==82.0.1
 spidev==3.8
 sysv_ipc==1.2.0
 typing_extensions==4.15.0
+pytest==9.0.3
+pytest-cov==7.1.0
+psutil
