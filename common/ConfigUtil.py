@@ -51,3 +51,19 @@ def get_poll_rate(sensor_name: str) -> Optional[int]:
 		if sensor.get('id') == sensor_name:
 			return int(sensor.get('poll_rate_seconds'))
 	return int(5)
+
+def sensor_parser(sensor_name:str,info:str):
+	cfg = _load_config()
+	sensors = cfg.get('sensors',[])
+	for sensor in sensors: 
+		if sensor.get('id') == sensor_name: 
+			return sensor.get(info)
+	return None
+
+def actuator_parser(actuator_name:str, info:str):
+	cfg = _load_config()
+	actuators = cfg.get('actuator',[])
+	for actuator in actuators: 
+		if actuator.get('id') == actuator_name: 
+			return actuator.get(info)
+	return None

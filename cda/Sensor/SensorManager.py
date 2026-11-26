@@ -15,8 +15,6 @@ class SensorManager(object):
     
     def __init__(self):
         
-        
-
         self.scheduler = BackgroundScheduler()
         self.hardware_bus_lock = threading.Lock()
         self.cache_lock = threading.Lock()
